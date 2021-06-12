@@ -1,0 +1,7 @@
+{
+  "name": "getting-started-iv-vue",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue"
+}
