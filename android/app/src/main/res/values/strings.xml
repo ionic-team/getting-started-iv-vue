@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">getting-started-iv-vue</string>
+    <string name="title_activity_main">getting-started-iv-vue</string>
+    <string name="package_name">io.ionic.gettintstartedivvue</string>
+    <string name="custom_url_scheme">io.ionic.gettintstartedivvue</string>
+</resources>

@@ -1,18 +1,22 @@
 {
   "name": "getting-started-iv-vue",
-  "version": "0.0.1",
+  "description": "Getting Started with Identity Vault",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
+    "build": "vue-cli-service build && cap copy",
+    "lint": "vue-cli-service lint",
+    "postinstall": "husky install",
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "test:e2e": "vue-cli-service test:e2e",
-    "lint": "vue-cli-service lint"
+    "test:e2e": "vue-cli-service test:e2e"
   },
   "dependencies": {
+    "@capacitor/android": "3.0.1",
     "@capacitor/app": "1.0.1",
     "@capacitor/core": "3.0.1",
     "@capacitor/haptics": "1.0.1",
+    "@capacitor/ios": "3.0.1",
     "@capacitor/keyboard": "1.0.1",
     "@ionic/vue": "^5.4.0",
     "@ionic/vue-router": "^5.4.0",
@@ -22,6 +26,7 @@
   },
   "devDependencies": {
     "@capacitor/cli": "3.0.1",
+    "@ionic/prettier-config": "~1.0.1",
     "@types/jest": "^24.0.19",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
@@ -37,8 +42,11 @@
     "@vue/test-utils": "^2.0.0-0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^7.0.0-0",
+    "husky": "~6.0.0",
+    "prettier": "~2.3.1",
+    "pretty-quick": "~3.1.0",
     "typescript": "~3.9.3",
     "vue-jest": "^5.0.0-0"
   },
-  "description": "An Ionic project"
+  "prettier": "@ionic/prettier-config"
 }
