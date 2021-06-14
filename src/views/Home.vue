@@ -52,6 +52,14 @@
         </ion-item>
 
         <ion-item>
+          <ion-label>Use Privacy Screen</ion-label>
+          <ion-checkbox
+            :checked="privacyScreen"
+            @ionChange="privacyScreenChanged"
+          ></ion-checkbox>
+        </ion-item>
+
+        <ion-item>
           <ion-label>
             <div>Session Data: {{ session }}</div>
             <div>Vault is Locked: {{ vaultIsLocked }}</div>
@@ -65,6 +73,7 @@
 <script lang="ts">
 import {
   IonButton,
+  IonCheckbox,
   IonContent,
   IonHeader,
   IonInput,
@@ -83,6 +92,7 @@ export default defineComponent({
   name: 'Home',
   components: {
     IonButton,
+    IonCheckbox,
     IonContent,
     IonHeader,
     IonInput,
@@ -95,8 +105,16 @@ export default defineComponent({
   },
   setup() {
     const data = ref('');
+    const privacyScreen = ref(false);
 
-    return { ...useVault(), data };
+    Device.isHideScreenOnBackgroundEnabled().then(
+      x => (privacyScreen.value = x),
+    );
+    const privacyScreenChanged = (evt: { detail: { checked: boolean } }) => {
+      Device.setHideScreenOnBackground(evt.detail.checked);
+    };
+
+    return { ...useVault(), data, privacyScreen, privacyScreenChanged };
   },
 });
 </script>
