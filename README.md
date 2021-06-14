@@ -392,3 +392,134 @@ Finally, we can add the checkbox to our template:
 **Note:** remember to import `IonCheckbox` and add it to the list of components for this view.
 
 Build the app and play around with changing the check box and putting the app in the background. In most applications, you would leave this value set by default, but if you were going to change it, you would most likely just do so on startup and leave it that way.
+
+## Using Different Vault Types
+
+The mechanism used to unlock the vault is determined by a combination of the `type` and the `deviceSecurityType` configuration settings. The type can be any of the following:
+
+- `SecureStorage`: Securely store the data in the keychain, but do not lock it.
+- `DeviceSecurity`: When the vault is locked, it needs to be unlocked via a mechanism provided by the device.
+- `CustomPasscode`: When the vault is locked, it needs to be unlocked via a custom method provided by the application. This is typically done in the form of a custom PIN dialog.
+- `InMemory`: The data is never persisted. As a result, if the application is locked or restarted, the data is gone.
+
+In addition to these types, if `DeviceSecurity` is used, it is further refined by the `deviceSecurityType`, which can be any of the following values:
+
+- `Biometrics`: Use the biometric authentication type specified by the device.
+- `SystemPasscode`: Use the system passcode entry screen.
+- `SystemPasscode`: Use `Biometrics` with the `SystemPasscode` as a backup when `Biometrics` fails.
+
+We specified `SecureStorage` when we set up the vault:
+
+```TypeScript
+const config = {
+  key: 'io.ionic.getstartedivvue',
+  type: 'SecureStorage' as any,
+  deviceSecurityType: 'SystemPasscode' as any,
+  lockAfterBackgrounded: 2000,
+  shouldClearVaultAfterTooManyFailedAttempts: true,
+  customPasscodeInvalidUnlockAttempts: 2,
+  unlockVaultOnLoad: false,
+};
+```
+
+However, we can use the vault's `updateConfig()` method to change this at run time.
+
+In our application,we don't want to use every possible combination. Rather than exposing the raw `type` and `deviceSecurityType` values to the rest of the application, let's define the types of authentication we _do_ want to support:
+
+`NoLocking`: We want to store the session data securely, but never lock it.
+`Biometrics`: We want to use the device's biometric mechanism to unlock the vault when it is locked.
+`SystemPasscode`: We want to use the device's passcode screen (typically a PIN or pattern) to unlock the vault when it is locked.
+
+Now we have the types defined within the domain of our application. The only code within our application that will have to worry about what this means within the context of the Identity Vault configuration is our `useVault()` composition function.
+
+First let's add a reactive property to `src/services/useVault` just like the other ones that exist.
+
+```TypeScript
+const lockType = ref<
+  'NoLocking' | 'Biometrics' | 'SystemPasscode' | undefined
+>();
+```
+
+**Note:** remember to also return this as part of the object returned by `useVault()`.
+
+Next, we will need to watch for changes and update the configuration when they occur. Since we only need a single watch to do this once, we should put that outside the `useVault()` function, just like our reactive properties and our `onLock` and `onUnlock` event handlers.
+
+```TypeScript
+  const setLockType = (
+    lockType: 'NoLocking' | 'Biometrics' | 'SystemPasscode' | undefined,
+  ) => {
+    let type: 'SecureStorage' | 'DeviceSecurity';
+    let deviceSecurityType: 'SystemPasscode' | 'Biometrics';
+
+    if (lockType) {
+      switch (lockType) {
+        case 'Biometrics':
+          type = 'DeviceSecurity';
+          deviceSecurityType = 'Biometrics';
+          break;
+
+        case 'SystemPasscode':
+          type = 'DeviceSecurity';
+          deviceSecurityType = 'SystemPasscode';
+          break;
+
+        default:
+          type = 'SecureStorage';
+          deviceSecurityType = 'SystemPasscode';
+      }
+
+      config = {
+        ...config,
+        type,
+        deviceSecurityType,
+      };
+      vault.updateConfig(config);
+    }
+  };
+
+  watch(lockType, lock => setLockType(lock));
+```
+
+**Note:** when this code is added, you will also need to add `watch` to the import from "vue" and change the `config` declaration from a `const` to a `let`.
+
+We can now add a group of radio buttons to our `Home` view that will control the vault type. Remember to import any new components we are using and specify them in the view's components object.
+
+```html
+<ion-item>
+  <ion-radio-group v-model="lockType">
+    <ion-list-header>
+      <ion-label> Vault Locking Mechanism </ion-label>
+    </ion-list-header>
+
+    <ion-item>
+      <ion-label>Do Not Lock</ion-label>
+      <ion-radio value="NoLocking"></ion-radio>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Use Biometrics</ion-label>
+      <ion-radio :disabled="!canUseBiometrics" value="Biometrics"></ion-radio>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Use System Passcode</ion-label>
+      <ion-radio value="SystemPasscode"></ion-radio>
+    </ion-item>
+  </ion-radio-group>
+</ion-item>
+```
+
+Notice for the "Use Biometric" radio button, we are disabling it based on a `canUseBiometrics` value. We will need to code for that in our `setup()`.
+
+```TypeScript
+    const canUseBiometrics = ref(false);
+    Device.isBiometricsEnabled().then(x => (canUseBiometrics.value = x));
+```
+
+Notice that we are using the `Device` API again here to determine if biometrics are both supported by the current device as well as enabled by the user. We don't want users to be able to choose that option unless the biometrics are properly set up on the device.
+
+Be sure to include `canUseBiometrics` in the return statement at the end of `setup()`.
+
+One final bit of housekeeping before building and running the application is that if you are using an iOS device you need to open the `Info.plist` file and add the `NSFaceIDUsageDescription` key with a value like "Use Face ID to unlock the vault when it is locked."
+
+Now when you run the app, you can choose a different locking mechanism and it should be used whenever you need to unlock the vault.

@@ -60,6 +60,32 @@
         </ion-item>
 
         <ion-item>
+          <ion-radio-group v-model="lockType">
+            <ion-list-header>
+              <ion-label> Vault Locking Mechanism </ion-label>
+            </ion-list-header>
+
+            <ion-item>
+              <ion-label>Do Not Lock</ion-label>
+              <ion-radio value="NoLocking"></ion-radio>
+            </ion-item>
+
+            <ion-item>
+              <ion-label>Use Biometrics</ion-label>
+              <ion-radio
+                :disabled="!canUseBiometrics"
+                value="Biometrics"
+              ></ion-radio>
+            </ion-item>
+
+            <ion-item>
+              <ion-label>Use System Passcode</ion-label>
+              <ion-radio value="SystemPasscode"></ion-radio>
+            </ion-item>
+          </ion-radio-group>
+        </ion-item>
+
+        <ion-item>
           <ion-label>
             <div>Session Data: {{ session }}</div>
             <div>Vault is Locked: {{ vaultIsLocked }}</div>
@@ -80,7 +106,10 @@ import {
   IonItem,
   IonLabel,
   IonList,
+  IonListHeader,
   IonPage,
+  IonRadio,
+  IonRadioGroup,
   IonTitle,
   IonToolbar,
 } from '@ionic/vue';
@@ -99,14 +128,19 @@ export default defineComponent({
     IonItem,
     IonLabel,
     IonList,
+    IonListHeader,
     IonPage,
+    IonRadio,
+    IonRadioGroup,
     IonTitle,
     IonToolbar,
   },
   setup() {
+    const canUseBiometrics = ref(false);
     const data = ref('');
     const privacyScreen = ref(false);
 
+    Device.isBiometricsEnabled().then(x => (canUseBiometrics.value = x));
     Device.isHideScreenOnBackgroundEnabled().then(
       x => (privacyScreen.value = x),
     );
@@ -114,7 +148,13 @@ export default defineComponent({
       Device.setHideScreenOnBackground(evt.detail.checked);
     };
 
-    return { ...useVault(), data, privacyScreen, privacyScreenChanged };
+    return {
+      ...useVault(),
+      canUseBiometrics,
+      data,
+      privacyScreen,
+      privacyScreenChanged,
+    };
   },
 });
 </script>
