@@ -18,6 +18,7 @@ const lockType = ref<
   'NoLocking' | 'Biometrics' | 'SystemPasscode' | undefined
 >();
 const session = ref<string | null | undefined>();
+const vaultExists = ref(false);
 const vaultIsLocked = ref(false);
 
 vault.onLock(() => {
@@ -62,9 +63,12 @@ const setLockType = (
 watch(lockType, lock => setLockType(lock));
 
 export default function useVault() {
+  vault.doesVaultExist().then(x => (vaultExists.value = x));
+
   const setSession = async (value: string): Promise<void> => {
     session.value = value;
     await vault.setValue(key, value);
+    vaultExists.value = await vault.doesVaultExist();
   };
 
   const restoreSession = async () => {
@@ -79,9 +83,17 @@ export default function useVault() {
     vault.unlock();
   };
 
+  const clearVault = async () => {
+    await vault.clear();
+    lockType.value = 'NoLocking';
+    session.value = undefined;
+    vaultExists.value = await vault.doesVaultExist();
+  };
+
   return {
     lockType,
     session,
+    vaultExists,
     vaultIsLocked,
 
     lockVault,
@@ -89,5 +101,6 @@ export default function useVault() {
 
     setSession,
     restoreSession,
+    clearVault,
   };
 }

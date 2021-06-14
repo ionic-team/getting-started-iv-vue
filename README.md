@@ -523,3 +523,38 @@ Be sure to include `canUseBiometrics` in the return statement at the end of `set
 One final bit of housekeeping before building and running the application is that if you are using an iOS device you need to open the `Info.plist` file and add the `NSFaceIDUsageDescription` key with a value like "Use Face ID to unlock the vault when it is locked."
 
 Now when you run the app, you can choose a different locking mechanism and it should be used whenever you need to unlock the vault.
+
+## Clear the Vault
+
+One last method we will explore before we leave is the `clear()` method. The `clear()` API will remove all items from the vault and then remove the vault itself.
+
+To show this in action, let's add a `vaultExists` reactive property to our `src/services/useVault.ts` file. Remember to return it from the `useVault()` composable function so we bind to it in our view.
+
+```TypeScript
+const vaultExists = ref(false);
+```
+
+Let's then add a `clearVault()` function within `useVault()`. This function will call `vault.clear()`, reset the lockType to the default of `NoLocking`, and clear our session data cache.
+
+```
+  const clearVault = async () => {
+    await vault.clear();
+    lockType.value = 'NoLocking';
+    session.value = undefined;
+  };
+```
+
+Remember to add it to the return from `useVault()` as well.
+
+In order to see when a vault does and does not exist, let's use `vaultExists.value = await vault.doesVaultExist();` in a couple of places. Add a call in `clearVault()` as well as in `setSession()`. Let's also add a call within `useVault()` itself, but since that function is not `async` we will need to use the "promise then" syntax there. Add those call now.
+
+With that in place, open the `Home.vue` file and do the following:
+
+- Add a button to clear the vault by calling `clearVault()` on click
+- Display the current value of `vaultExists` in a `div` just like we are currently showing `session` and `vaultIsLocked`
+
+## Conclusion
+
+This walk-through has implemented using Identity Vault in a very manual manner, allowing for a lot of user interaction with the vault. In an actual application, a lot of this functionality would instead be a part of several programatic workflows within the aplication.
+
+At this point, you should have a good idea of how Identity Vault works. There is still more functionality that can be implemented. Be sure to check out our HowTo documents to determine how to facilitate specific areas of functionality within your application.
