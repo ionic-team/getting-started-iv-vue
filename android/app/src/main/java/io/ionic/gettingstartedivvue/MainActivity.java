@@ -1,4 +1,4 @@
-package io.ionic.gettintstartedivvue;
+package io.ionic.gettingstartedivvue;
 
 import com.getcapacitor.BridgeActivity;
 

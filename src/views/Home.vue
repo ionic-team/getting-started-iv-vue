@@ -13,70 +13,74 @@
         </ion-toolbar>
       </ion-header>
 
-      <div id="container">
-        <strong>Ready to create an app?</strong>
-        <p>
-          Start with Ionic
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://ionicframework.com/docs/components"
-            >UI Components</a
-          >
-        </p>
-      </div>
+      <ion-list>
+        <ion-item>
+          <ion-label position="floating">Enter the "session" data</ion-label>
+          <ion-input v-model="data"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>
+            <ion-button expand="block" @click="setSession(data)"
+              >Set Session Data</ion-button
+            >
+          </ion-label>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>
+            <ion-button expand="block" @click="restoreSession"
+              >Restore Session Data</ion-button
+            >
+          </ion-label>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>
+            <div>Session Data: {{ session }}</div>
+          </ion-label>
+        </ion-item>
+      </ion-list>
     </ion-content>
   </ion-page>
 </template>
 
 <script lang="ts">
 import {
+  IonButton,
   IonContent,
   IonHeader,
+  IonInput,
+  IonItem,
+  IonLabel,
+  IonList,
   IonPage,
   IonTitle,
   IonToolbar,
 } from '@ionic/vue';
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
+import useVault from '@/services/useVault';
 
 export default defineComponent({
   name: 'Home',
   components: {
+    IonButton,
     IonContent,
     IonHeader,
+    IonInput,
+    IonItem,
+    IonLabel,
+    IonList,
     IonPage,
     IonTitle,
     IonToolbar,
   },
+  setup() {
+    const data = ref('');
+
+    return { ...useVault(), data };
+  },
 });
 </script>
 
-<style scoped>
-#container {
-  text-align: center;
-
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
-}
-
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-
-  color: #8c8c8c;
-
-  margin: 0;
-}
-
-#container a {
-  text-decoration: none;
-}
-</style>
+<style scoped></style>
