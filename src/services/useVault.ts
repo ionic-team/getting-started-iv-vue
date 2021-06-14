@@ -15,6 +15,13 @@ const key = 'sessionData';
 const vault: Vault = new Vault(config);
 
 const session = ref<string | null | undefined>();
+const vaultIsLocked = ref(false);
+
+vault.onLock(() => {
+  vaultIsLocked.value = true;
+  session.value = undefined;
+});
+vault.onUnlock(() => (vaultIsLocked.value = false));
 
 export default function useVault() {
   const setSession = async (value: string): Promise<void> => {
@@ -27,8 +34,19 @@ export default function useVault() {
     session.value = value;
   };
 
+  const lockVault = () => {
+    vault.lock();
+  };
+  const unlockVault = () => {
+    vault.unlock();
+  };
+
   return {
     session,
+    vaultIsLocked,
+
+    lockVault,
+    unlockVault,
 
     setSession,
     restoreSession,

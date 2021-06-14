@@ -250,3 +250,94 @@ export default defineComponent({
 
 1. As we continue with this tutorial, we will just provide the new markup or code that is required. Make sure to add the correct imports and component definitions will be up to you.
 1. Notice that this view is returning the full return value of the `useVault()` composition function. This is just being done for convenience. Normally, you would use destructuring to just grab the bits that are needed in any component or service.
+
+## Locking and Unlocking the Vault
+
+Now that we are storing data in the vault, it would be helpful to lock and unlock that data. The vault will automatically lock after `lockAfterBackgrounded` milliseconds of the application being in the background. We can also lock the vault manually if we so desire.
+
+Add the following code to the `useVault()` composition function:
+
+```TypeScript
+  const lockVault = () => {
+    vault.lock();
+  };
+  const unlockVault = () => {
+    vault.unlock();
+  };
+```
+
+Remember to return the references to the functions:
+
+```TypeScript
+  return {
+    session,
+
+    lockVault,
+    unlockVault,
+
+    setSession,
+    restoreSession,
+  };
+```
+
+We can then add a couple of buttons to our `Home.vue` component file:
+
+```html
+<ion-item>
+  <ion-label>
+    <ion-button expand="block" @click="lockVault">Lock Vault</ion-button>
+  </ion-label>
+</ion-item>
+
+<ion-item>
+  <ion-label>
+    <ion-button expand="block" @click="unlockVault">Unlock Vault</ion-button>
+  </ion-label>
+</ion-item>
+```
+
+We can now lock and unlock the vault, though in our current case we cannot really tell. Our application should react in some way when the vault is locked. For example, we may want to clear specific data from memory. We may also wish to redirect to a page that will onl allow the user to proceed if they unlock the vault. In our case, we will just clear the `session` and have a flag that we can use to visually indicate if the vault is locked or not. We can do that by using the vault's `onLock` event.
+
+Add the following code to `src/services/useVault.ts` before the start of the `useVault()` function:
+
+```TypeScript
+const vaultIsLocked = ref(false);
+
+vault.onLock(() => {
+  vaultIsLocked.value = true;
+  session.value = undefined;
+});
+vault.onUnlock(() => (vaultIsLocked.value = false));
+```
+
+Update the return value from `useVault()` to include the `vaultIsLocked` reactive value:
+
+```TypeScript
+  return {
+    session,
+    vaultIsLocked,
+
+    lockVault,
+    unlockVault,
+
+    setSession,
+    restoreSession,
+  };
+```
+
+Then update the `Home.vue` to display the `vaultIsLocked` value along with the session.
+
+```html
+<ion-item>
+  <ion-label>
+    <div>Session Data: {{ session }}</div>
+    <div>Vault is Locked: {{ vaultIsLocked }}</div>
+  </ion-label>
+</ion-item>
+```
+
+Build and run the application now. When the user clicks the "Lock Vault" button, the "Session Data" will be cleared out and the "Vault is Locked" will show as false. Clicking "Unlock Vault" will cause "Vault is Locked" to show as true again. Notice as well that you can lock the vault, but then also unlock it and get the session data base by clicking "Restore Session Data".
+
+In that latter case, you didn't have to do anything to unlock the vault. That is because we are not using a type of vault that actually locks. As a matter of fact, with the `SecureStorage` type of vault, the vault also will not automatically lock while the application is in the background.
+
+In a couple of sections, we will explore on expanding this further by using different vault types. First, though, we will begin exploring the `Device` API.

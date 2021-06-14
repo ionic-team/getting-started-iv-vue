@@ -37,7 +37,24 @@
 
         <ion-item>
           <ion-label>
+            <ion-button expand="block" @click="lockVault"
+              >Lock Vault</ion-button
+            >
+          </ion-label>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>
+            <ion-button expand="block" @click="unlockVault"
+              >Unlock Vault</ion-button
+            >
+          </ion-label>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>
             <div>Session Data: {{ session }}</div>
+            <div>Vault is Locked: {{ vaultIsLocked }}</div>
           </ion-label>
         </ion-item>
       </ion-list>
@@ -59,6 +76,7 @@ import {
   IonToolbar,
 } from '@ionic/vue';
 import { defineComponent, ref } from 'vue';
+import { Device } from '@ionic-enterprise/identity-vault';
 import useVault from '@/services/useVault';
 
 export default defineComponent({
