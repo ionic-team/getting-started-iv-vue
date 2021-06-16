@@ -63,12 +63,12 @@ First, create a file named `src/services/useVault.ts`. Within this file, we will
 
 ```TypeScript
 import { ref } from 'vue';
-import { Vault } from '@ionic-enterprise/identity-vault';
+import { Vault, IdentityVaultConfig } from '@ionic-enterprise/identity-vault';
 
-const config = {
+const config: IdentityVaultConfig = {
   key: 'io.ionic.getstartedivvue',
-  type: 'SecureStorage' as any,
-  deviceSecurityType: 'SystemPasscode' as any,
+  type: 'SecureStorage',
+  deviceSecurityType: 'SystemPasscode',
   lockAfterBackgrounded: 2000,
   shouldClearVaultAfterTooManyFailedAttempts: true,
   customPasscodeInvalidUnlockAttempts: 2,
@@ -103,10 +103,10 @@ export default function useVault() {
 Let's look at this file section by section. The first thing we do is define a configuration for our vault. The `key` gives the vault a name. The other properties provide a default behavior for our vault, and as we shall see later, can be changed as we use the vault.
 
 ```TypeScript
-const config = {
+const config: IdentityVaultConfig = {
   key: 'io.ionic.getstartedivvue',
-  type: 'SecureStorage' as any,
-  deviceSecurityType: 'SystemPasscode' as any,
+  type: 'SecureStorage',
+  deviceSecurityType: 'SystemPasscode',
   lockAfterBackgrounded: 2000,
   shouldClearVaultAfterTooManyFailedAttempts: true,
   customPasscodeInvalidUnlockAttempts: 2,
@@ -344,7 +344,7 @@ In a couple of sections, we will explore on expanding this further by using diff
 
 ## The `Device` API
 
-Identity Vault allows you to have multiple vaults within your application. However, this are some capabilities that Identity Vault allows you to control that are applicable to the device that the application is running on rather than being applicable to any given vault. For these items, we will use Identity Vault's `Device` API.
+Identity Vault allows you to have multiple vaults within your application. However, there are some capabilities that Identity Vault allows you to control that are applicable to the device that the application is running on rather than being applicable to any given vault. For these items, we will use Identity Vault's `Device` API.
 
 One such item is the "privacy screen." When an application is put into the background, the default behavior is for the OS to take a screenshot of the current page and display that as the user scrolls through the open applications. However, if your application displays sensitive information, you may not want that information displayed at such a time, so another option is to display the splash screen (on iOS) or a plain rectangle (on Android) instead of the screenshot. This is often referred to as a "privacy screen."
 
@@ -406,15 +406,15 @@ In addition to these types, if `DeviceSecurity` is used, it is further refined b
 
 - `Biometrics`: Use the biometric authentication type specified by the device.
 - `SystemPasscode`: Use the system passcode entry screen.
-- `SystemPasscode`: Use `Biometrics` with the `SystemPasscode` as a backup when `Biometrics` fails.
+- `Both`: Use `Biometrics` with the `SystemPasscode` as a backup when `Biometrics` fails.
 
 We specified `SecureStorage` when we set up the vault:
 
 ```TypeScript
-const config = {
+const config: IdentityVaultConfig = {
   key: 'io.ionic.getstartedivvue',
-  type: 'SecureStorage' as any,
-  deviceSecurityType: 'SystemPasscode' as any,
+  type: 'SecureStorage',
+  deviceSecurityType: 'SystemPasscode',
   lockAfterBackgrounded: 2000,
   shouldClearVaultAfterTooManyFailedAttempts: true,
   customPasscodeInvalidUnlockAttempts: 2,
