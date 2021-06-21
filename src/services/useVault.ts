@@ -25,15 +25,16 @@ vault.onLock(() => {
   vaultIsLocked.value = true;
   session.value = undefined;
 });
+
 vault.onUnlock(() => (vaultIsLocked.value = false));
+
+vault.isLocked().then(x => (vaultIsLocked.value = x));
 
 const setLockType = (
   lockType: 'NoLocking' | 'Biometrics' | 'SystemPasscode' | undefined,
 ) => {
   let type: 'SecureStorage' | 'DeviceSecurity';
   let deviceSecurityType: 'SystemPasscode' | 'Biometrics';
-
-  console.log('setting the lock type', lockType);
 
   if (lockType) {
     switch (lockType) {

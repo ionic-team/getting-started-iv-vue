@@ -147,7 +147,7 @@ export default function useVault() {
 }
 ```
 
-**Note:** rather than create define functions such as `setSession()` and `restoreSession()`, we _could_ just return the `vault` from the composition function and use its API directly in the rest of the application. However, that would expose the rest of the application to potential API changes as well as potentially result in duplicated code. In my opinion, it is a much better option to return functions that define how I would like the rest of the application to interact with the vault. This makes the code more maintainable and easier to debug.
+**Note:** rather than create define functions such as `setSession()` and `restoreSession()`, we _could_ just return the `vault` from the composition function and use its API directly in the rest of the application. However, that would expose the rest of the application to potential API changes as well as potentially result in duplicated code. In our opinion, it is a much better option to return functions that define how we would like the rest of the application to interact with the vault. This makes the code more maintainable and easier to debug.
 
 Now that we have the vault in place, let's switch over to `src/views/Home.vue` and code some simple interactions with the vault. Here is a snapshot of what we will change:
 
@@ -251,6 +251,8 @@ export default defineComponent({
 1. As we continue with this tutorial, we will just provide the new markup or code that is required. Make sure to add the correct imports and component definitions will be up to you.
 1. Notice that this view is returning the full return value of the `useVault()` composition function. This is just being done for convenience. Normally, you would use destructuring to just grab the bits that are needed in any component or service.
 
+Build this run it on your device(s). You should be able to enter some data and store it in the vault by clicking "Set Session Data." If you then shutdown the app and start it again, you should be able to restore it using "Restore Session Data."
+
 ## Locking and Unlocking the Vault
 
 Now that we are storing data in the vault, it would be helpful to lock and unlock that data. The vault will automatically lock after `lockAfterBackgrounded` milliseconds of the application being in the background. We can also lock the vault manually if we so desire.
@@ -307,6 +309,7 @@ vault.onLock(() => {
   vaultIsLocked.value = true;
   session.value = undefined;
 });
+
 vault.onUnlock(() => (vaultIsLocked.value = false));
 ```
 
@@ -523,6 +526,26 @@ Be sure to include `canUseBiometrics` in the return statement at the end of `set
 One final bit of housekeeping before building and running the application is that if you are using an iOS device you need to open the `Info.plist` file and add the `NSFaceIDUsageDescription` key with a value like "Use Face ID to unlock the vault when it is locked."
 
 Now when you run the app, you can choose a different locking mechanism and it should be used whenever you need to unlock the vault.
+
+## Initialize the `vaultIsLocked` Flag
+
+Try the following:
+
+1. Set some session data
+1. Choose either "Use Biometrics" or "Use System Passcode"
+1. Close the app
+1. Restart the app
+1. Note that "Vault is Locked" is shown as `false`
+1. Press "Restore Session Data"
+1. Note that you are asked to unlock the vault
+
+Clearly the vault was locked. Our flag is wrong because we are just setting it to `false` on startup, and the `onLock` event handler is not running on startup. We need a way to detect the current lock status on startup (or any other time that we may want to know it programmatically). The `Vault` API gives us that via the `isLocked()` method. Add the following line of code immediately after the `onLock` and `onUnlock` event handlers in our `useVault.ts` file.
+
+```TypeScript
+vault.isLocked().then(x => (vaultIsLocked.value = x));
+```
+
+Now when we restart the app, the vault should be shown as locked.
 
 ## Clear the Vault
 
