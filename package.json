@@ -18,7 +18,7 @@
     "@capacitor/haptics": "1.0.1",
     "@capacitor/ios": "3.0.1",
     "@capacitor/keyboard": "1.0.1",
-    "@ionic-enterprise/identity-vault": "~4.3.2-dev-7efc405.0",
+    "@ionic-enterprise/identity-vault": "~5.0.0-beta.0",
     "@ionic/vue": "^5.4.0",
     "@ionic/vue-router": "^5.4.0",
     "core-js": "^3.6.5",

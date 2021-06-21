@@ -451,8 +451,8 @@ Next, we will need to watch for changes and update the configuration when they o
   const setLockType = (
     lockType: 'NoLocking' | 'Biometrics' | 'SystemPasscode' | undefined,
   ) => {
-    let type: 'SecureStorage' | 'DeviceSecurity';
-    let deviceSecurityType: 'SystemPasscode' | 'Biometrics';
+    let type: VaultType;
+    let deviceSecurityType: DeviceSecurityType;
 
     if (lockType) {
       switch (lockType) {
@@ -484,6 +484,8 @@ Next, we will need to watch for changes and update the configuration when they o
 ```
 
 **Note:** when this code is added, you will also need to add `watch` to the import from "vue" and change the `config` declaration from a `const` to a `let`.
+
+Also, be sure to import `VaultType` and `DeviceSecurityType` from `@ionic-enterprise/identity-vault`.
 
 We can now add a group of radio buttons to our `Home` view that will control the vault type. Remember to import any new components we are using and specify them in the view's components object.
 

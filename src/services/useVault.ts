@@ -1,10 +1,15 @@
 import { ref, watch } from 'vue';
-import { Vault } from '@ionic-enterprise/identity-vault';
+import {
+  DeviceSecurityType,
+  IdentityVaultConfig,
+  Vault,
+  VaultType,
+} from '@ionic-enterprise/identity-vault';
 
-let config = {
+let config: IdentityVaultConfig = {
   key: 'io.ionic.getstartedivvue',
-  type: 'SecureStorage' as any,
-  deviceSecurityType: 'SystemPasscode' as any,
+  type: 'SecureStorage',
+  deviceSecurityType: 'SystemPasscode',
   lockAfterBackgrounded: 2000,
   shouldClearVaultAfterTooManyFailedAttempts: true,
   customPasscodeInvalidUnlockAttempts: 2,
@@ -33,8 +38,8 @@ vault.isLocked().then(x => (vaultIsLocked.value = x));
 const setLockType = (
   lockType: 'NoLocking' | 'Biometrics' | 'SystemPasscode' | undefined,
 ) => {
-  let type: 'SecureStorage' | 'DeviceSecurity';
-  let deviceSecurityType: 'SystemPasscode' | 'Biometrics';
+  let type: VaultType;
+  let deviceSecurityType: DeviceSecurityType;
 
   if (lockType) {
     switch (lockType) {
