@@ -65,7 +65,7 @@ First, create a file named `src/services/useVault.ts`. Within this file, we will
 import { ref } from 'vue';
 import { Vault, IdentityVaultConfig } from '@ionic-enterprise/identity-vault';
 
-const config: IdentityVaultConfig = {
+const vault: Vault = new Vault({
   key: 'io.ionic.getstartedivvue',
   type: 'SecureStorage',
   deviceSecurityType: 'SystemPasscode',
@@ -73,11 +73,9 @@ const config: IdentityVaultConfig = {
   shouldClearVaultAfterTooManyFailedAttempts: true,
   customPasscodeInvalidUnlockAttempts: 2,
   unlockVaultOnLoad: false,
-};
+});
+
 const key = 'sessionData';
-
-const vault: Vault = new Vault(config);
-
 const session = ref<string | null | undefined>();
 
 export default function useVault() {
@@ -100,10 +98,10 @@ export default function useVault() {
 }
 ```
 
-Let's look at this file section by section. The first thing we do is define a configuration for our vault. The `key` gives the vault a name. The other properties provide a default behavior for our vault, and as we shall see later, can be changed as we use the vault.
+Let's look at this file section by section. The first thing we do is instantiate our vault object. The `key` gives the vault a name. The other properties provide a default behavior for our vault. As we shall see later, the configuration can be changed as we use the vault.
 
 ```TypeScript
-const config: IdentityVaultConfig = {
+const vault: Vault = new Vault({
   key: 'io.ionic.getstartedivvue',
   type: 'SecureStorage',
   deviceSecurityType: 'SystemPasscode',
@@ -111,16 +109,13 @@ const config: IdentityVaultConfig = {
   shouldClearVaultAfterTooManyFailedAttempts: true,
   customPasscodeInvalidUnlockAttempts: 2,
   unlockVaultOnLoad: false,
-};
+});
 ```
 
-Next, we will define a key for storing data. All data within the vault is stored as a key-value pair, and you can store multiple key-value pairs within a single vault. We will also create the vault as well as a reactive property that will be used to reflect the current `session` data to the outside world.
+Next, we will define a key for storing data. All data within the vault is stored as a key-value pair, and you can store multiple key-value pairs within a single vault. We will also create a reactive property that will be used to reflect the current `session` data to the outside world.
 
 ```TypeScript
 const key = 'sessionData';
-
-const vault: Vault = new Vault(config);
-
 const session = ref<string | null | undefined>();
 ```
 
@@ -414,7 +409,7 @@ In addition to these types, if `DeviceSecurity` is used, it is further refined b
 We specified `SecureStorage` when we set up the vault:
 
 ```TypeScript
-const config: IdentityVaultConfig = {
+const vault: Vault = new Vault({
   key: 'io.ionic.getstartedivvue',
   type: 'SecureStorage',
   deviceSecurityType: 'SystemPasscode',
@@ -422,7 +417,7 @@ const config: IdentityVaultConfig = {
   shouldClearVaultAfterTooManyFailedAttempts: true,
   customPasscodeInvalidUnlockAttempts: 2,
   unlockVaultOnLoad: false,
-};
+});
 ```
 
 However, we can use the vault's `updateConfig()` method to change this at run time.
@@ -471,19 +466,18 @@ Next, we will need to watch for changes and update the configuration when they o
           deviceSecurityType = 'SystemPasscode';
       }
 
-      config = {
-        ...config,
+      vault.updateConfig({
+        ...vault.config,
         type,
         deviceSecurityType,
-      };
-      vault.updateConfig(config);
+      });
     }
   };
 
   watch(lockType, lock => setLockType(lock));
 ```
 
-**Note:** when this code is added, you will also need to add `watch` to the import from "vue" and change the `config` declaration from a `const` to a `let`.
+**Note:** when this code is added, you will also need to add `watch` to the import from "vue."
 
 Also, be sure to import `VaultType` and `DeviceSecurityType` from `@ionic-enterprise/identity-vault`.
 
@@ -514,7 +508,7 @@ We can now add a group of radio buttons to our `Home` view that will control the
 </ion-item>
 ```
 
-Notice for the "Use Biometric" radio button, we are disabling it based on a `canUseBiometrics` value. We will need to code for that in our `setup()`.
+For the "Use Biometric" radio button, we are disabling it based on a `canUseBiometrics` value. We will need to code for that in our `setup()`.
 
 ```TypeScript
     const canUseBiometrics = ref(false);
@@ -527,7 +521,7 @@ Be sure to include `canUseBiometrics` in the return statement at the end of `set
 
 One final bit of housekeeping before building and running the application is that if you are using an iOS device you need to open the `Info.plist` file and add the `NSFaceIDUsageDescription` key with a value like "Use Face ID to unlock the vault when it is locked."
 
-Now when you run the app, you can choose a different locking mechanism and it should be used whenever you need to unlock the vault.
+Now when you run the app, you can choose a different locking mechanism and it should be used whenever you need to unlock the vault. If you change the vault type to use either Biometrics or Session Passcode, you should see that the vault is still using that mode when you restart the application. Even though we instantiate the vault object using `SecureStorage`, if a vault is already in operation, it remembers which mode it is operating in.
 
 ## Initialize the `vaultIsLocked` Flag
 
