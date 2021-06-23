@@ -149,7 +149,7 @@ export default function useVault() {
 
 **Note:** rather than create define functions such as `setSession()` and `restoreSession()`, we _could_ just return the `vault` from the composition function and use its API directly in the rest of the application. However, that would expose the rest of the application to potential API changes as well as potentially result in duplicated code. In our opinion, it is a much better option to return functions that define how we would like the rest of the application to interact with the vault. This makes the code more maintainable and easier to debug.
 
-Now that we have the vault in place, let's switch over to `src/views/Home.vue` and code some simple interactions with the vault. Here is a snapshot of what we will change:
+Now that we have the vault in place, let's switch over to `src/views/Home.vue` and implement some simple interactions with the vault. Here is a snapshot of what we will change:
 
 1. replace the "container" `div` with a list of form controls
 1. add a `setup()` function
@@ -248,10 +248,10 @@ export default defineComponent({
 
 **Notes:**
 
-1. As we continue with this tutorial, we will just provide the new markup or code that is required. Make sure to add the correct imports and component definitions will be up to you.
+1. As we continue with this tutorial, we will just provide the new markup or code that is required. It is up to you to make sure that the correct imports and component definitions are added.
 1. Notice that this view is returning the full return value of the `useVault()` composition function. This is just being done for convenience. Normally, you would use destructuring to just grab the bits that are needed in any component or service.
 
-Build this run it on your device(s). You should be able to enter some data and store it in the vault by clicking "Set Session Data." If you then shutdown the app and start it again, you should be able to restore it using "Restore Session Data."
+Build this and run it on your device(s). You should be able to enter some data and store it in the vault by clicking "Set Session Data." If you then shutdown the app and start it again, you should be able to restore it using "Restore Session Data."
 
 ## Locking and Unlocking the Vault
 
