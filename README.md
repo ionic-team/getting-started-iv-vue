@@ -521,7 +521,7 @@ Be sure to include `canUseBiometrics` in the return statement at the end of `set
 
 One final bit of housekeeping before building and running the application is that if you are using an iOS device you need to open the `Info.plist` file and add the `NSFaceIDUsageDescription` key with a value like "Use Face ID to unlock the vault when it is locked."
 
-Now when you run the app, you can choose a different locking mechanism and it should be used whenever you need to unlock the vault. If you change the vault type to use either Biometrics or Session Passcode, you should see that the vault is still using that mode when you restart the application. Even though we instantiate the vault object using `SecureStorage`, if a vault is already in operation, it remembers which mode it is operating in.
+Now when you run the app, you can choose a different locking mechanism and it should be used whenever you need to unlock the vault. If you change the vault type to use either Biometrics or Session Passcode, you should see that the vault is still using that mode when you restart the application. If a vault already exists for a given key (such as 'io.ionic.getstartedivvue'), the vault remembers which mode it is operating in and will ignore the mode passed into the Vault object's constructor.
 
 ## Initialize the `vaultIsLocked` Flag
 
