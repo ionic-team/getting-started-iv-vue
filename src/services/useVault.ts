@@ -1,12 +1,11 @@
 import { ref, watch } from 'vue';
 import {
   DeviceSecurityType,
-  IdentityVaultConfig,
   Vault,
   VaultType,
 } from '@ionic-enterprise/identity-vault';
 
-let config: IdentityVaultConfig = {
+const vault: Vault = new Vault({
   key: 'io.ionic.getstartedivvue',
   type: 'SecureStorage',
   deviceSecurityType: 'SystemPasscode',
@@ -14,11 +13,9 @@ let config: IdentityVaultConfig = {
   shouldClearVaultAfterTooManyFailedAttempts: true,
   customPasscodeInvalidUnlockAttempts: 2,
   unlockVaultOnLoad: false,
-};
+});
+
 const key = 'sessionData';
-
-const vault: Vault = new Vault(config);
-
 const lockType = ref<
   'NoLocking' | 'Biometrics' | 'SystemPasscode' | undefined
 >();
@@ -58,12 +55,11 @@ const setLockType = (
         deviceSecurityType = 'SystemPasscode';
     }
 
-    config = {
-      ...config,
+    vault.updateConfig({
+      ...vault.config,
       type,
       deviceSecurityType,
-    };
-    vault.updateConfig(config);
+    });
   }
 };
 watch(lockType, lock => setLockType(lock));
