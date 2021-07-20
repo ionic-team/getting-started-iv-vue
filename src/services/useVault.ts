@@ -59,8 +59,10 @@ const setLockType = (
 
       default:
         type = VaultType.SecureStorage;
-        deviceSecurityType = undefined;
+        deviceSecurityType = DeviceSecurityType.SystemPasscode;
     }
+
+    console.log('set config', type, deviceSecurityType);
 
     vault.updateConfig({
       ...vault.config,
@@ -81,14 +83,17 @@ export default function useVault() {
   };
 
   const restoreSession = async () => {
+    console.log('restore', vault.config.type, vault.config.deviceSecurityType);
     const value = await vault.getValue(key);
     session.value = value;
   };
 
   const lockVault = () => {
+    console.log('lock', vault.config.type, vault.config.deviceSecurityType);
     vault.lock();
   };
   const unlockVault = () => {
+    console.log('unlock', vault.config.type, vault.config.deviceSecurityType);
     vault.unlock();
   };
 
