@@ -1,19 +1,27 @@
-import { ref, watch } from 'vue';
+import { Capacitor } from '@capacitor/core';
 import {
+  BrowserVault,
   DeviceSecurityType,
+  IdentityVaultConfig,
   Vault,
   VaultType,
 } from '@ionic-enterprise/identity-vault';
+import { ref, watch } from 'vue';
 
-const vault: Vault = new Vault({
+const config: IdentityVaultConfig = {
   key: 'io.ionic.getstartedivvue',
-  type: 'SecureStorage',
-  deviceSecurityType: 'SystemPasscode',
+  type: VaultType.SecureStorage,
+  deviceSecurityType: DeviceSecurityType.SystemPasscode,
   lockAfterBackgrounded: 2000,
   shouldClearVaultAfterTooManyFailedAttempts: true,
   customPasscodeInvalidUnlockAttempts: 2,
   unlockVaultOnLoad: false,
-});
+};
+
+const vault =
+  Capacitor.getPlatform() === 'web'
+    ? new BrowserVault(config)
+    : new Vault(config);
 
 const key = 'sessionData';
 const lockType = ref<
@@ -41,18 +49,18 @@ const setLockType = (
   if (lockType) {
     switch (lockType) {
       case 'Biometrics':
-        type = 'DeviceSecurity';
-        deviceSecurityType = 'Biometrics';
+        type = VaultType.DeviceSecurity;
+        deviceSecurityType = DeviceSecurityType.Biometrics;
         break;
 
       case 'SystemPasscode':
-        type = 'DeviceSecurity';
-        deviceSecurityType = 'SystemPasscode';
+        type = VaultType.DeviceSecurity;
+        deviceSecurityType = DeviceSecurityType.SystemPasscode;
         break;
 
       default:
-        type = 'SecureStorage';
-        deviceSecurityType = 'SystemPasscode';
+        type = VaultType.SecureStorage;
+        deviceSecurityType = DeviceSecurityType.SystemPasscode;
     }
 
     vault.updateConfig({

@@ -62,18 +62,31 @@ In this step, we will create the vault and test it by storing an retrieving a va
 First, create a file named `src/services/useVault.ts`. Within this file, we will define the vault as well as create a composition function that abstracts all of the logic we need in order to interact with the vault.
 
 ```TypeScript
+import { Capacitor } from '@capacitor/core';
+import {
+  BrowserVault,
+  DeviceSecurityType,
+  IdentityVaultConfig,
+  Vault,
+  VaultType,
+} from '@ionic-enterprise/identity-vault';
 import { ref } from 'vue';
-import { Vault, IdentityVaultConfig } from '@ionic-enterprise/identity-vault';
 
-const vault: Vault = new Vault({
+
+const config: IdentityVaultConfig = {
   key: 'io.ionic.getstartedivvue',
-  type: 'SecureStorage',
-  deviceSecurityType: 'SystemPasscode',
+  type: VaultType.SecureStorage,
+  deviceSecurityType: DeviceSecurityType.SystemPasscode,
   lockAfterBackgrounded: 2000,
   shouldClearVaultAfterTooManyFailedAttempts: true,
   customPasscodeInvalidUnlockAttempts: 2,
   unlockVaultOnLoad: false,
-});
+};
+
+const vault =
+  Capacitor.getPlatform() === 'web'
+    ? new BrowserVault(config)
+    : new Vault(config);
 
 const key = 'sessionData';
 const session = ref<string | null | undefined>();
@@ -98,18 +111,25 @@ export default function useVault() {
 }
 ```
 
-Let's look at this file section by section. The first thing we do is instantiate our vault object. The `key` gives the vault a name. The other properties provide a default behavior for our vault. As we shall see later, the configuration can be changed as we use the vault.
+Let's look at this file section by section. The first thing we do is define the configuration for our vault. The `key` gives the vault a name. The other properties provide a default behavior for our vault. As we shall see later, the configuration can be changed as we use the vault.
+
+We then create the vault. Note that we are using the `BrowserVault` class the application is running on the web. The `BrowserVault` allows us to continue to use our normal web-based development workflow.
 
 ```TypeScript
-const vault: Vault = new Vault({
+const config: IdentityVaultConfig = {
   key: 'io.ionic.getstartedivvue',
-  type: 'SecureStorage',
-  deviceSecurityType: 'SystemPasscode',
+  type: VaultType.SecureStorage,
+  deviceSecurityType: DeviceSecurityType.SystemPasscode,
   lockAfterBackgrounded: 2000,
   shouldClearVaultAfterTooManyFailedAttempts: true,
   customPasscodeInvalidUnlockAttempts: 2,
   unlockVaultOnLoad: false,
-});
+};
+
+const vault =
+  Capacitor.getPlatform() === 'web'
+    ? new BrowserVault(config)
+    : new Vault(config);
 ```
 
 Next, we will define a key for storing data. All data within the vault is stored as a key-value pair, and you can store multiple key-value pairs within a single vault. We will also create a reactive property that will be used to reflect the current `session` data to the outside world.
@@ -348,31 +368,41 @@ One such item is the "privacy screen." When an application is put into the backg
 
 We will use the `Device.isHideScreenOnBackgroundEnabled()` method to determine if our application will currently display the privacy screen or not. We will then use the `Device.setHideScreenOnBackground()` method to control whether it is displayed or not. Finally, we will hook that all up to a checkbox in the UI to allow the user to manipulate the value at run time.
 
+We only want to interact with the Device API if we are actually running on a Device, so we will also use Ionic's platform detection features to detect how we are runninga and avoid using the Device API when running on the web. Our app is not targetting the web. We just want to make sure we can still used a web based development flow.
+
 All of the following code applies to the `src/views/Home.vue` file.
 
-First, import the `Device` API:
+First, import the `Device` API and add `isPlatform` to the import from `@ionic/vue`:
 
 ```TypeScript
+import {
+  ...
+  isPlatform
+} from '@ionic/vue';
 import { Device } from '@ionic-enterprise/identity-vault';
 ```
 
 Then add the following code to the `setup()` function:
 
 ```TypeScript
+    const isMobile = isPlatform('hybrid');
     const privacyScreen = ref(false);
 
-    Device.isHideScreenOnBackgroundEnabled().then(
-      x => (privacyScreen.value = x),
-    );
+    if (isMobile) {
+      Device.isHideScreenOnBackgroundEnabled().then(
+        x => (privacyScreen.value = x),
+      );
+    }
+
     const privacyScreenChanged = (evt: { detail: { checked: boolean } }) => {
       Device.setHideScreenOnBackground(evt.detail.checked);
     };
 ```
 
-Remember to add `privacyScreen` and `privacyScreenChanged` to the return value of `setup()` so we can use those items in our template:
+Remember to add `isMobile`, `privacyScreen`, and `privacyScreenChanged` to the return value of `setup()` so we can use those items in our template:
 
 ```TypeScript
-return { ...useVault(), data, privacyScreen, privacyScreenChanged };
+return { ...useVault(), data, isMobile, privacyScreen, privacyScreenChanged };
 ```
 
 Finally, we can add the checkbox to our template:
@@ -381,6 +411,7 @@ Finally, we can add the checkbox to our template:
 <ion-item>
   <ion-label>Use Privacy Screen</ion-label>
   <ion-checkbox
+    :disabled="!isMobile"
     :checked="privacyScreen"
     @ionChange="privacyScreenChanged"
   ></ion-checkbox>
@@ -409,7 +440,7 @@ In addition to these types, if `DeviceSecurity` is used, it is further refined b
 We specified `SecureStorage` when we set up the vault:
 
 ```TypeScript
-const vault: Vault = new Vault({
+const config: IdentityVaultConfig = {
   key: 'io.ionic.getstartedivvue',
   type: 'SecureStorage',
   deviceSecurityType: 'SystemPasscode',
@@ -417,7 +448,7 @@ const vault: Vault = new Vault({
   shouldClearVaultAfterTooManyFailedAttempts: true,
   customPasscodeInvalidUnlockAttempts: 2,
   unlockVaultOnLoad: false,
-});
+};
 ```
 
 However, we can use the vault's `updateConfig()` method to change this at run time.
@@ -452,18 +483,18 @@ Next, we will need to watch for changes and update the configuration when they o
     if (lockType) {
       switch (lockType) {
         case 'Biometrics':
-          type = 'DeviceSecurity';
-          deviceSecurityType = 'Biometrics';
+          type = VaultType.DeviceSecurity;
+          deviceSecurityType = DeviceSecurityType.Biometrics;
           break;
 
         case 'SystemPasscode':
-          type = 'DeviceSecurity';
-          deviceSecurityType = 'SystemPasscode';
+          type = VaultType.DeviceSecurity;
+          deviceSecurityType = DeviceSecurityType.SystemPasscode;
           break;
 
         default:
-          type = 'SecureStorage';
-          deviceSecurityType = 'SystemPasscode';
+          type = VaultType.SecureStorage;
+          deviceSecurityType = DeviceSecurityType.SystemPasscode;
       }
 
       vault.updateConfig({
@@ -502,22 +533,31 @@ We can now add a group of radio buttons to our `Home` view that will control the
 
     <ion-item>
       <ion-label>Use System Passcode</ion-label>
-      <ion-radio value="SystemPasscode"></ion-radio>
+      <ion-radio
+        :disabled="!canUseSystemPIN."
+        value="SystemPasscode"
+      ></ion-radio>
     </ion-item>
   </ion-radio-group>
 </ion-item>
 ```
 
-For the "Use Biometric" radio button, we are disabling it based on a `canUseBiometrics` value. We will need to code for that in our `setup()`.
+For the "Use Biometric" and "Use System Passcode "radio buttons, we are disabling it based on whether or not the feature has been enabled on the device. We will need to code for that in our `setup()`.
 
 ```TypeScript
+    const canUseSystemPIN = ref(false);
     const canUseBiometrics = ref(false);
-    Device.isBiometricsEnabled().then(x => (canUseBiometrics.value = x));
+
+    if (isMobile) {
+      Device.isSystemPasscodeSet().then(x => (canUseSystemPIN.value = x));
+      Device.isBiometricsEnabled().then(x => (canUseBiometrics.value = x));
+      ...
+    }
 ```
 
 Notice that we are using the `Device` API again here to determine if biometrics are both supported by the current device as well as enabled by the user. We don't want users to be able to choose that option unless the biometrics are properly set up on the device.
 
-Be sure to include `canUseBiometrics` in the return statement at the end of `setup()`.
+Be sure to include `canUseSystemPIN` and `canUseBiometrics` in the return statement at the end of `setup()`.
 
 One final bit of housekeeping before building and running the application is that if you are using an iOS device you need to open the `Info.plist` file and add the `NSFaceIDUsageDescription` key with a value like "Use Face ID to unlock the vault when it is locked."
 

@@ -62,6 +62,7 @@
         <ion-item>
           <ion-label>Use Privacy Screen</ion-label>
           <ion-checkbox
+            :disabled="!isMobile"
             :checked="privacyScreen"
             @ionChange="privacyScreenChanged"
           ></ion-checkbox>
@@ -88,7 +89,10 @@
 
             <ion-item>
               <ion-label>Use System Passcode</ion-label>
-              <ion-radio value="SystemPasscode"></ion-radio>
+              <ion-radio
+                :disabled="!canUseSystemPIN"
+                value="SystemPasscode"
+              ></ion-radio>
             </ion-item>
           </ion-radio-group>
         </ion-item>
@@ -121,6 +125,7 @@ import {
   IonRadioGroup,
   IonTitle,
   IonToolbar,
+  isPlatform,
 } from '@ionic/vue';
 import { defineComponent, ref } from 'vue';
 import { Device } from '@ionic-enterprise/identity-vault';
@@ -145,14 +150,20 @@ export default defineComponent({
     IonToolbar,
   },
   setup() {
+    const isMobile = isPlatform('hybrid');
     const canUseBiometrics = ref(false);
+    const canUseSystemPIN = ref(false);
     const data = ref('');
     const privacyScreen = ref(false);
 
-    Device.isBiometricsEnabled().then(x => (canUseBiometrics.value = x));
-    Device.isHideScreenOnBackgroundEnabled().then(
-      x => (privacyScreen.value = x),
-    );
+    if (isMobile) {
+      Device.isSystemPasscodeSet().then(x => (canUseSystemPIN.value = x));
+      Device.isBiometricsEnabled().then(x => (canUseBiometrics.value = x));
+      Device.isHideScreenOnBackgroundEnabled().then(
+        x => (privacyScreen.value = x),
+      );
+    }
+
     const privacyScreenChanged = (evt: { detail: { checked: boolean } }) => {
       Device.setHideScreenOnBackground(evt.detail.checked);
     };
@@ -160,6 +171,8 @@ export default defineComponent({
     return {
       ...useVault(),
       canUseBiometrics,
+      canUseSystemPIN,
+      isMobile,
       data,
       privacyScreen,
       privacyScreenChanged,
