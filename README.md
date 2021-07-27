@@ -76,6 +76,7 @@ import { ref } from 'vue';
 const config: IdentityVaultConfig = {
   key: 'io.ionic.getstartedivvue',
   type: VaultType.SecureStorage,
+  deviceSecurityType: DeviceSecurityType.None,
   lockAfterBackgrounded: 2000,
   shouldClearVaultAfterTooManyFailedAttempts: true,
   customPasscodeInvalidUnlockAttempts: 2,
@@ -118,7 +119,7 @@ We then create the vault. Note that we are using the `BrowserVault` class the ap
 const config: IdentityVaultConfig = {
   key: 'io.ionic.getstartedivvue',
   type: VaultType.SecureStorage,
-  deviceSecurityType: DeviceSecurityType.SystemPasscode,
+  deviceSecurityType: DeviceSecurityType.None,
   lockAfterBackgrounded: 2000,
   shouldClearVaultAfterTooManyFailedAttempts: true,
   customPasscodeInvalidUnlockAttempts: 2,
@@ -443,6 +444,7 @@ We specified `SecureStorage` when we set up the vault:
 const config: IdentityVaultConfig = {
   key: 'io.ionic.getstartedivvue',
   type: 'SecureStorage',
+  deviceSecurityType: DeviceSecurityType.None,
   lockAfterBackgrounded: 2000,
   shouldClearVaultAfterTooManyFailedAttempts: true,
   customPasscodeInvalidUnlockAttempts: 2,
@@ -493,7 +495,7 @@ Next, we will need to watch for changes and update the configuration when they o
 
         default:
           type = VaultType.SecureStorage;
-          deviceSecurityType = DeviceSecurityType.SystemPasscode;
+          deviceSecurityType = DeviceSecurityType.None;
       }
 
       vault.updateConfig({
@@ -508,8 +510,6 @@ Next, we will need to watch for changes and update the configuration when they o
 ```
 
 **Note:** when this code is added, you will also need to add `watch` to the import from "vue."
-
-Also, be sure to import `VaultType` and `DeviceSecurityType` from `@ionic-enterprise/identity-vault`.
 
 We can now add a group of radio buttons to our `Home` view that will control the vault type. Remember to import any new components we are using and specify them in the view's components object.
 

@@ -156,13 +156,11 @@ export default defineComponent({
     const data = ref('');
     const privacyScreen = ref(false);
 
-    if (isMobile) {
-      Device.isSystemPasscodeSet().then(x => (canUseSystemPIN.value = x));
-      Device.isBiometricsEnabled().then(x => (canUseBiometrics.value = x));
-      Device.isHideScreenOnBackgroundEnabled().then(
-        x => (privacyScreen.value = x),
-      );
-    }
+    Device.isSystemPasscodeSet().then(x => (canUseSystemPIN.value = x));
+    Device.isBiometricsEnabled().then(x => (canUseBiometrics.value = x));
+    Device.isHideScreenOnBackgroundEnabled().then(
+      x => (privacyScreen.value = x),
+    );
 
     const privacyScreenChanged = (evt: { detail: { checked: boolean } }) => {
       Device.setHideScreenOnBackground(evt.detail.checked);

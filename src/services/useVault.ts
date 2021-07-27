@@ -11,6 +11,7 @@ import { ref, watch } from 'vue';
 const config: IdentityVaultConfig = {
   key: 'io.ionic.getstartedivvue',
   type: VaultType.SecureStorage,
+  deviceSecurityType: DeviceSecurityType.None,
   lockAfterBackgrounded: 2000,
   shouldClearVaultAfterTooManyFailedAttempts: true,
   customPasscodeInvalidUnlockAttempts: 2,
@@ -59,7 +60,7 @@ const setLockType = (
 
       default:
         type = VaultType.SecureStorage;
-        deviceSecurityType = DeviceSecurityType.SystemPasscode;
+        deviceSecurityType = DeviceSecurityType.None;
     }
 
     console.log('set config', type, deviceSecurityType);
