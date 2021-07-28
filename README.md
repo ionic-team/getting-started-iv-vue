@@ -1,19 +1,21 @@
-# Getting Started with Identity Vault in `@ionic/vue`
+# Getting Started with Identity Vault in @ionic/vue
 
-This application walks through the basic setup and use of Ionic's Identity Vault in an `@ionic/vue` application. Rather than connecting to a back end service and storing the session data this application will just store information that you type in and tell it to store. Almost all of the work done here will be concentrated on a couple of files:
+In this tutorial we will walk through the basic setup and use of Ionic's Identity Vault in an `@ionic/vue` application.
 
-- `src/services/useVault.ts`: a composition API function that abstracts the logic associated with using Identity Vault. This functions and reactive variable exported here model what might be done in a real application.
-- `src/views/Home.vue`: the main view will have several form controls that allow the user to manipulate the vault. An application would not typically do this. Rather, it would call the methods from `useVault()` within various workflows. In this "getting started" demo application, however, this allows us to easily play around with the various APIs to see how they behave.
+The most common use case of Identity Vault is to connect to a back end service and store user session data. For the purpose of this tutorial, the application we build will not connect to an actual service. Instead, the application will store information that the user enteres.
+
+- `src/services/useVault.ts`: A composition API function that abstracts the logic associated with using Identity Vault. This functions and reactive variable exported here model what might be done in a real application.
+- `src/views/Home.vue`: The main view will have several form controls that allow the user to manipulate the vault. An application would not typically do this. Rather, it would call the methods from `useVault()` within various workflows. In this "getting started" demo application, however, this allows us to easily play around with the various APIs to see how they behave.
 
 ## Generate the Application
 
-The first thing we need to do is generate our application.
+The first step to take is to generate the application:
 
 ```bash
 ionic start getting-started-iv-vue blank --type=vue
 ```
 
-Now that the application has been generated, let's also add the native platforms.
+Now that the application has been generated, let's also add the iOS and Android platforms.
 
 Open the `capacitor.config.ts` file and change the `appId` to something unique like `io.ionic.gettingstartedivvue`:
 
@@ -49,7 +51,11 @@ Finally, in order to ensure that a `cap copy` with each build, add it to the bui
 
 ## Install Identity Vault
 
-In order to install Identity Vault, you will need to use `ionic enterprise register` in order to register your product key. This will create a `.npmrc` file containing the product key. If you have already performed that step for your production application, you can just copy the `.npmrc` file from your production project. Since this application is just for learning purposes, you don't need to obtain another key. You can then install Identity Vault.
+In order to install Identity Vault, you will need to use `ionic enterprise register` to register your product key. This will create a `.npmrc` file containing the product key.
+
+If you have already performed that step for your production application, you can just copy the `.npmrc` file from your production project. Since this application is for learning purposes only, you don't need to obtain another key.
+
+You can now install Identity Vault:
 
 ```bash
 npm install @ionic-enterprise/identity-vault@next
@@ -57,9 +63,9 @@ npm install @ionic-enterprise/identity-vault@next
 
 ## Create the Vault
 
-In this step, we will create the vault and test it by storing an retrieving a value from it. We will call this value the `session` since storing session data in a vault is the most common use case. However, it is certainly not the _only_ use case.
+In this step, we will create the vault and test it by storing an retrieving a value from it. This value will be called `session` since storing session data in a vault is the most common use case. However, it is certainly not the _only_ use case.
 
-First, create a file named `src/services/useVault.ts`. Within this file, we will define the vault as well as create a composition function that abstracts all of the logic we need in order to interact with the vault.
+First, create a file named `src/services/useVault.ts`. Within this file, we will define the vault as well as create a composition function that abstracts all of the logic we need in order to interact with the vault:
 
 ```TypeScript
 import { Capacitor } from '@capacitor/core';
@@ -111,7 +117,9 @@ export default function useVault() {
 }
 ```
 
-Let's look at this file section by section. The first thing we do is define the configuration for our vault. The `key` gives the vault a name. The other properties provide a default behavior for our vault. As we shall see later, the configuration can be changed as we use the vault.
+Let's look at this file section by section:
+
+The first thing we do is define the configuration for our vault. The `key` gives the vault a name. The other properties provide a default behavior for our vault. As we shall see later, the configuration can be changed as we use the vault.
 
 We then create the vault. Note that we are using the `BrowserVault` class the application is running on the web. The `BrowserVault` allows us to continue to use our normal web-based development workflow.
 
@@ -132,7 +140,13 @@ const vault =
     : new Vault(config);
 ```
 
-Next, we will define a key for storing data. All data within the vault is stored as a key-value pair, and you can store multiple key-value pairs within a single vault. We will also create a reactive property that will be used to reflect the current `session` data to the outside world.
+:::note
+The `BrowserVault` class allows developers to use their normal web-based development workflow. It does **not** provide locking or security functionality.
+:::
+
+Next, we define a key for storing data. All data within the vault is stored as a key-value pair. You can store multiple key-value pairs within a single vault.
+
+We also create a reactive property that is used to reflect the current `session` data to the outside world.
 
 ```TypeScript
 const key = 'sessionData';
@@ -162,7 +176,9 @@ export default function useVault() {
 }
 ```
 
-**Note:** rather than create define functions such as `setSession()` and `restoreSession()`, we _could_ just return the `vault` from the composition function and use its API directly in the rest of the application. However, that would expose the rest of the application to potential API changes as well as potentially result in duplicated code. In our opinion, it is a much better option to return functions that define how we would like the rest of the application to interact with the vault. This makes the code more maintainable and easier to debug.
+:::note
+Rather than create define functions such as `setSession()` and `restoreSession()`, we _could_ just return the `vault` from the composition function and use its API directly in the rest of the application. However, that would expose the rest of the application to potential API changes as well as potentially result in duplicated code. In our opinion, it is a much better option to return functions that define how we would like the rest of the application to interact with the vault. This makes the code more maintainable and easier to debug.
+:::
 
 Now that we have the vault in place, let's switch over to `src/views/Home.vue` and implement some simple interactions with the vault. Here is a snapshot of what we will change:
 
@@ -261,12 +277,13 @@ export default defineComponent({
 <style scoped></style>
 ```
 
-**Notes:**
+:::Note
+As we continue with this tutorial, we will just provide the new markup or code that is required. It is up to you to make sure that the correct imports and component definitions are added.
 
-1. As we continue with this tutorial, we will just provide the new markup or code that is required. It is up to you to make sure that the correct imports and component definitions are added.
-1. Notice that this view is returning the full return value of the `useVault()` composition function. This is just being done for convenience. Normally, you would use destructuring to just grab the bits that are needed in any component or service.
+Also notice that this view is returning the full return value of the `useVault()` composition function. This is just being done for convenience. Normally, you would use destructuring to just grab the bits that are needed in any component or service.
+:::
 
-Build this and run it on your device(s). You should be able to enter some data and store it in the vault by clicking "Set Session Data." If you then shutdown the app and start it again, you should be able to restore it using "Restore Session Data."
+Build the application and run it an iOS and/or Android device. You should be able to enter some data and store it in the vault by clicking "Set Session Data." If you then shutdown the app and start it again, you should be able to restore it using "Restore Session Data."
 
 ## Locking and Unlocking the Vault
 
@@ -314,7 +331,9 @@ We can then add a couple of buttons to our `Home.vue` component file:
 </ion-item>
 ```
 
-We can now lock and unlock the vault, though in our current case we cannot really tell. Our application should react in some way when the vault is locked. For example, we may want to clear specific data from memory. We may also wish to redirect to a page that will onl allow the user to proceed if they unlock the vault. In our case, we will just clear the `session` and have a flag that we can use to visually indicate if the vault is locked or not. We can do that by using the vault's `onLock` event.
+We can now lock and unlock the vault, though in our current state we cannot really tell. Our application should react in some way when the vault is locked. For example, we may want to clear specific data from memory. We may also wish to redirect to a page that will onl allow the user to proceed if they unlock the vault.
+
+In our case, we will just clear the `session` and have a flag that we can use to visually indicate if the vault is locked or not. We can do that by using the vault's `onLock` event.
 
 Add the following code to `src/services/useVault.ts` before the start of the `useVault()` function:
 
@@ -344,7 +363,7 @@ Update the return value from `useVault()` to include the `vaultIsLocked` reactiv
   };
 ```
 
-Then update the `Home.vue` to display the `vaultIsLocked` value along with the session.
+Finally, update the `Home.vue` to display the `vaultIsLocked` value along with the session:
 
 ```html
 <ion-item>
@@ -355,19 +374,19 @@ Then update the `Home.vue` to display the `vaultIsLocked` value along with the s
 </ion-item>
 ```
 
-Build and run the application now. When the user clicks the "Lock Vault" button, the "Session Data" will be cleared out and the "Vault is Locked" will show as false. Clicking "Unlock Vault" will cause "Vault is Locked" to show as true again. Notice as well that you can lock the vault, but then also unlock it and get the session data base by clicking "Restore Session Data".
+Build and run the application. When the user clicks the "Lock Vault" button, the "Session Data" will be cleared out and the "Vault is Locked" will show as false. Clicking "Unlock Vault" will cause "Vault is Locked" to show as true again. Notice as well that you can lock the vault, but then also unlock it and get the session data base by clicking "Restore Session Data".
 
 In that latter case, you didn't have to do anything to unlock the vault. That is because we are not using a type of vault that actually locks. As a matter of fact, with the `SecureStorage` type of vault, the vault also will not automatically lock while the application is in the background.
 
 In a couple of sections, we will explore on expanding this further by using different vault types. First, though, we will begin exploring the `Device` API.
 
-## The `Device` API
+## Device Level Capabilities
 
 Identity Vault allows you to have multiple vaults within your application. However, there are some capabilities that Identity Vault allows you to control that are applicable to the device that the application is running on rather than being applicable to any given vault. For these items, we will use Identity Vault's `Device` API.
 
 One such item is the "privacy screen." When an application is put into the background, the default behavior is for the OS to take a screenshot of the current page and display that as the user scrolls through the open applications. However, if your application displays sensitive information, you may not want that information displayed at such a time, so another option is to display the splash screen (on iOS) or a plain rectangle (on Android) instead of the screenshot. This is often referred to as a "privacy screen."
 
-We will use the `Device.isHideScreenOnBackgroundEnabled()` method to determine if our application will currently display the privacy screen or not. We will then use the `Device.setHideScreenOnBackground()` method to control whether it is displayed or not. Finally, we will hook that all up to a checkbox in the UI to allow the user to manipulate the value at run time.
+We will use the `Device.isHideScreenOnBackgroundEnabled()` method to determine if our application will currently display the privacy screen or not. Then we will use the `Device.setHideScreenOnBackground()` method to control whether it is displayed or not. Finally, we will hook that all up to a checkbox in the UI to allow the user to manipulate the value at run time.
 
 We only want to interact with the Device API if we are actually running on a Device, so we will also use Ionic's platform detection features to detect how we are runninga and avoid using the Device API when running on the web. Our app is not targetting the web. We just want to make sure we can still used a web based development flow.
 
@@ -419,7 +438,9 @@ Finally, we can add the checkbox to our template:
 </ion-item>
 ```
 
-**Note:** remember to import `IonCheckbox` and add it to the list of components for this view.
+:::note
+Remember to import `IonCheckbox` and add it to the list of components for this view.
+:::
 
 Build the app and play around with changing the check box and putting the app in the background. In most applications, you would leave this value set by default, but if you were going to change it, you would most likely just do so on startup and leave it that way.
 
@@ -470,7 +491,9 @@ const lockType = ref<
 >();
 ```
 
-**Note:** remember to also return this as part of the object returned by `useVault()`.
+:::note
+Remember to also return this as part of the object returned by `useVault()`.
+:::
 
 Next, we will need to watch for changes and update the configuration when they occur. Since we only need a single watch to do this once, we should put that outside the `useVault()` function, just like our reactive properties and our `onLock` and `onUnlock` event handlers.
 
@@ -509,7 +532,9 @@ Next, we will need to watch for changes and update the configuration when they o
   watch(lockType, lock => setLockType(lock));
 ```
 
-**Note:** when this code is added, you will also need to add `watch` to the import from "vue."
+:::note
+When this code is added, you will also need to add `watch` to the import from "vue."
+:::
 
 We can now add a group of radio buttons to our `Home` view that will control the vault type. Remember to import any new components we are using and specify them in the view's components object.
 
@@ -562,7 +587,7 @@ One final bit of housekeeping before building and running the application is tha
 
 Now when you run the app, you can choose a different locking mechanism and it should be used whenever you need to unlock the vault. If you change the vault type to use either Biometrics or Session Passcode, you should see that the vault is still using that mode when you restart the application. If a vault already exists for a given key (such as 'io.ionic.getstartedivvue'), the vault remembers which mode it is operating in and will ignore the mode passed into the Vault object's constructor.
 
-## Initialize the `vaultIsLocked` Flag
+## Current Lock Status
 
 Try the following:
 
@@ -613,6 +638,6 @@ With that in place, open the `Home.vue` file and do the following:
 
 ## Conclusion
 
-This walk-through has implemented using Identity Vault in a very manual manner, allowing for a lot of user interaction with the vault. In an actual application, a lot of this functionality would instead be a part of several programatic workflows within the aplication.
+This "getting started" tutorial has implemented using Identity Vault in a very manual manner, allowing for a lot of user interaction with the vault. In an actual application, a lot of this functionality would instead be a part of several programatic workflows within the aplication.
 
-At this point, you should have a good idea of how Identity Vault works. There is still more functionality that can be implemented. Be sure to check out our HowTo documents to determine how to facilitate specific areas of functionality within your application.
+At this point, you should have a good idea of how Identity Vault works. There is still more functionality that can be implemented. Be sure to check out our other documentation to determine how to facilitate specific areas of functionality within your application.
