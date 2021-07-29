@@ -408,11 +408,9 @@ Then add the following code to the `setup()` function:
     const isMobile = isPlatform('hybrid');
     const privacyScreen = ref(false);
 
-    if (isMobile) {
-      Device.isHideScreenOnBackgroundEnabled().then(
-        x => (privacyScreen.value = x),
-      );
-    }
+    Device.isHideScreenOnBackgroundEnabled().then(
+      x => (privacyScreen.value = x),
+    );
 
     const privacyScreenChanged = (evt: { detail: { checked: boolean } }) => {
       Device.setHideScreenOnBackground(evt.detail.checked);
@@ -572,11 +570,8 @@ For the "Use Biometric" and "Use System Passcode "radio buttons, we are disablin
     const canUseSystemPIN = ref(false);
     const canUseBiometrics = ref(false);
 
-    if (isMobile) {
-      Device.isSystemPasscodeSet().then(x => (canUseSystemPIN.value = x));
-      Device.isBiometricsEnabled().then(x => (canUseBiometrics.value = x));
-      ...
-    }
+    Device.isSystemPasscodeSet().then(x => (canUseSystemPIN.value = x));
+    Device.isBiometricsEnabled().then(x => (canUseBiometrics.value = x));
 ```
 
 Notice that we are using the `Device` API again here to determine if biometrics are both supported by the current device as well as enabled by the user. We don't want users to be able to choose that option unless the biometrics are properly set up on the device.
