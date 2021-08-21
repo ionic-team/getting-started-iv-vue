@@ -2,7 +2,7 @@
 
 In this tutorial we will walk through the basic setup and use of Ionic's Identity Vault in an `@ionic/vue` application.
 
-The most common use case of Identity Vault is to connect to a back end service and store user session data. For the purpose of this tutorial, the application we build will not connect to an actual service. Instead, the application will store information that the user enteres.
+The most common use case of Identity Vault is to connect to a back end service and store user session data. For the purpose of this tutorial, the application we build will not connect to an actual service. Instead, the application will store information that the user enters.
 
 - `src/services/useVault.ts`: A composition API function that abstracts the logic associated with using Identity Vault. This functions and reactive variable exported here model what might be done in a real application.
 - `src/views/Home.vue`: The main view will have several form controls that allow the user to manipulate the vault. An application would not typically do this. Rather, it would call the methods from `useVault()` within various workflows. In this "getting started" demo application, however, this allows us to easily play around with the various APIs to see how they behave.
@@ -40,7 +40,7 @@ ionic cap add android
 ionic cap add ios
 ```
 
-Finally, in order to ensure that a `cap copy` with each build, add it to the build script in the `package.json` file as such:
+Finally, in order to ensure that a `cap copy` runs with each build, add it to the build script in the `package.json` file as such:
 
 ```JSON
   "scripts": {
@@ -58,7 +58,7 @@ If you have already performed that step for your production application, you can
 You can now install Identity Vault:
 
 ```bash
-npm install @ionic-enterprise/identity-vault@next
+npm install @ionic-enterprise/identity-vault
 ```
 
 ## Create the Vault
@@ -388,7 +388,7 @@ One such item is the "privacy screen." When an application is put into the backg
 
 We will use the `Device.isHideScreenOnBackgroundEnabled()` method to determine if our application will currently display the privacy screen or not. Then we will use the `Device.setHideScreenOnBackground()` method to control whether it is displayed or not. Finally, we will hook that all up to a checkbox in the UI to allow the user to manipulate the value at run time.
 
-We only want to interact with the Device API if we are actually running on a Device, so we will also use Ionic's platform detection features to detect how we are runninga and avoid using the Device API when running on the web. Our app is not targetting the web. We just want to make sure we can still used a web based development flow.
+We only want to interact with the Device API if we are actually running on a Device, so we will also use Ionic's platform detection features to detect how we are running and avoid using the Device API when running on the web. Our app is not targeting the web. We just want to make sure we can still used a web based development flow.
 
 All of the following code applies to the `src/views/Home.vue` file.
 
@@ -633,6 +633,6 @@ With that in place, open the `Home.vue` file and do the following:
 
 ## Conclusion
 
-This "getting started" tutorial has implemented using Identity Vault in a very manual manner, allowing for a lot of user interaction with the vault. In an actual application, a lot of this functionality would instead be a part of several programatic workflows within the aplication.
+This "getting started" tutorial has implemented using Identity Vault in a very manual manner, allowing for a lot of user interaction with the vault. In an actual application, a lot of this functionality would instead be a part of several programmatic workflows within the application.
 
 At this point, you should have a good idea of how Identity Vault works. There is still more functionality that can be implemented. Be sure to check out our other documentation to determine how to facilitate specific areas of functionality within your application.
