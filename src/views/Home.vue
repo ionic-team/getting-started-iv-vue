@@ -21,51 +21,37 @@
 
         <ion-item>
           <ion-label>
-            <ion-button expand="block" @click="setSession(data)"
-              >Set Session Data</ion-button
-            >
+            <ion-button expand="block" @click="setSession(data)">Set Session Data</ion-button>
           </ion-label>
         </ion-item>
 
         <ion-item>
           <ion-label>
-            <ion-button expand="block" @click="restoreSession"
-              >Restore Session Data</ion-button
-            >
+            <ion-button expand="block" @click="restoreSession">Restore Session Data</ion-button>
           </ion-label>
         </ion-item>
 
         <ion-item>
           <ion-label>
-            <ion-button expand="block" @click="clearVault"
-              >Clear Vault</ion-button
-            >
+            <ion-button expand="block" @click="clearVault">Clear Vault</ion-button>
           </ion-label>
         </ion-item>
 
         <ion-item>
           <ion-label>
-            <ion-button expand="block" @click="lockVault"
-              >Lock Vault</ion-button
-            >
+            <ion-button expand="block" @click="lockVault">Lock Vault</ion-button>
           </ion-label>
         </ion-item>
 
         <ion-item>
           <ion-label>
-            <ion-button expand="block" @click="unlockVault"
-              >Unlock Vault</ion-button
-            >
+            <ion-button expand="block" @click="unlockVault">Unlock Vault</ion-button>
           </ion-label>
         </ion-item>
 
         <ion-item>
           <ion-label>Use Privacy Screen</ion-label>
-          <ion-checkbox
-            :disabled="!isMobile"
-            :checked="privacyScreen"
-            @ionChange="privacyScreenChanged"
-          ></ion-checkbox>
+          <ion-checkbox :disabled="!isMobile" :checked="privacyScreen" @ionChange="privacyScreenChanged"></ion-checkbox>
         </ion-item>
 
         <ion-item>
@@ -81,18 +67,12 @@
 
             <ion-item>
               <ion-label>Use Biometrics</ion-label>
-              <ion-radio
-                :disabled="!canUseBiometrics"
-                value="Biometrics"
-              ></ion-radio>
+              <ion-radio :disabled="!canUseBiometrics" value="Biometrics"></ion-radio>
             </ion-item>
 
             <ion-item>
               <ion-label>Use System Passcode</ion-label>
-              <ion-radio
-                :disabled="!canUseSystemPIN"
-                value="SystemPasscode"
-              ></ion-radio>
+              <ion-radio :disabled="!canUseSystemPIN" value="SystemPasscode"></ion-radio>
             </ion-item>
           </ion-radio-group>
         </ion-item>
@@ -156,11 +136,9 @@ export default defineComponent({
     const data = ref('');
     const privacyScreen = ref(false);
 
-    Device.isSystemPasscodeSet().then(x => (canUseSystemPIN.value = x));
-    Device.isBiometricsEnabled().then(x => (canUseBiometrics.value = x));
-    Device.isHideScreenOnBackgroundEnabled().then(
-      x => (privacyScreen.value = x),
-    );
+    Device.isSystemPasscodeSet().then((x) => (canUseSystemPIN.value = x));
+    Device.isBiometricsEnabled().then((x) => (canUseBiometrics.value = x));
+    Device.isHideScreenOnBackgroundEnabled().then((x) => (privacyScreen.value = x));
 
     const privacyScreenChanged = (evt: { detail: { checked: boolean } }) => {
       Device.setHideScreenOnBackground(evt.detail.checked);

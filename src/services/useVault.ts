@@ -18,15 +18,10 @@ const config: IdentityVaultConfig = {
   unlockVaultOnLoad: false,
 };
 
-const vault =
-  Capacitor.getPlatform() === 'web'
-    ? new BrowserVault(config)
-    : new Vault(config);
+const vault = Capacitor.getPlatform() === 'web' ? new BrowserVault(config) : new Vault(config);
 
 const key = 'sessionData';
-const lockType = ref<
-  'NoLocking' | 'Biometrics' | 'SystemPasscode' | undefined
->();
+const lockType = ref<'NoLocking' | 'Biometrics' | 'SystemPasscode' | undefined>();
 const session = ref<string | null | undefined>();
 const vaultExists = ref(false);
 const vaultIsLocked = ref(false);
@@ -38,11 +33,9 @@ vault.onLock(() => {
 
 vault.onUnlock(() => (vaultIsLocked.value = false));
 
-vault.isLocked().then(x => (vaultIsLocked.value = x));
+vault.isLocked().then((x) => (vaultIsLocked.value = x));
 
-const setLockType = (
-  lockType: 'NoLocking' | 'Biometrics' | 'SystemPasscode' | undefined,
-) => {
+const setLockType = (lockType: 'NoLocking' | 'Biometrics' | 'SystemPasscode' | undefined) => {
   let type: VaultType;
   let deviceSecurityType: DeviceSecurityType | undefined;
 
@@ -72,10 +65,10 @@ const setLockType = (
     });
   }
 };
-watch(lockType, lock => setLockType(lock));
+watch(lockType, (lock) => setLockType(lock));
 
 export default function useVault() {
-  vault.doesVaultExist().then(x => (vaultExists.value = x));
+  vault.doesVaultExist().then((x) => (vaultExists.value = x));
 
   const setSession = async (value: string): Promise<void> => {
     session.value = value;
