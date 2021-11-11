@@ -2,14 +2,14 @@
   <ion-page>
     <ion-header :translucent="true">
       <ion-toolbar>
-        <ion-title>Blank</ion-title>
+        <ion-title data-testid="title">IV Tester</ion-title>
       </ion-toolbar>
     </ion-header>
 
     <ion-content :fullscreen="true">
       <ion-header collapse="condense">
         <ion-toolbar>
-          <ion-title size="large">Blank</ion-title>
+          <ion-title size="large">IV Tester</ion-title>
         </ion-toolbar>
       </ion-header>
 
@@ -20,33 +20,33 @@
         </ion-item>
 
         <ion-item>
-          <ion-label>
+          <div style="flex: auto">
             <ion-button expand="block" @click="setSession(data)">Set Session Data</ion-button>
-          </ion-label>
+          </div>
         </ion-item>
 
         <ion-item>
-          <ion-label>
+          <div style="flex: auto">
             <ion-button expand="block" @click="restoreSession">Restore Session Data</ion-button>
-          </ion-label>
+          </div>
         </ion-item>
 
         <ion-item>
-          <ion-label>
+          <div style="flex: auto">
             <ion-button expand="block" @click="clearVault">Clear Vault</ion-button>
-          </ion-label>
+          </div>
         </ion-item>
 
         <ion-item>
-          <ion-label>
+          <div style="flex: auto">
             <ion-button expand="block" @click="lockVault">Lock Vault</ion-button>
-          </ion-label>
+          </div>
         </ion-item>
 
         <ion-item>
-          <ion-label>
+          <div style="flex: auto">
             <ion-button expand="block" @click="unlockVault">Unlock Vault</ion-button>
-          </ion-label>
+          </div>
         </ion-item>
 
         <ion-item>

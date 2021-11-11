@@ -211,19 +211,19 @@ When we are done, the page will look like this:
         </ion-item>
 
         <ion-item>
-          <ion-label>
+          <div style="flex: auto">
             <ion-button expand="block" @click="setSession(data)"
               >Set Session Data</ion-button
             >
-          </ion-label>
+          </div>
         </ion-item>
 
         <ion-item>
-          <ion-label>
+          <div style="flex: auto">
             <ion-button expand="block" @click="restoreSession"
               >Restore Session Data</ion-button
             >
-          </ion-label>
+          </div>
         </ion-item>
 
         <ion-item>
@@ -319,15 +319,15 @@ We can then add a couple of buttons to our `Home.vue` component file:
 
 ```html
 <ion-item>
-  <ion-label>
+  <div style="flex: auto">
     <ion-button expand="block" @click="lockVault">Lock Vault</ion-button>
-  </ion-label>
+  </div>
 </ion-item>
 
 <ion-item>
-  <ion-label>
+  <div style="flex: auto">
     <ion-button expand="block" @click="unlockVault">Unlock Vault</ion-button>
-  </ion-label>
+  </div>
 </ion-item>
 ```
 
@@ -428,11 +428,7 @@ Finally, we can add the checkbox to our template:
 ```html
 <ion-item>
   <ion-label>Use Privacy Screen</ion-label>
-  <ion-checkbox
-    :disabled="!isMobile"
-    :checked="privacyScreen"
-    @ionChange="privacyScreenChanged"
-  ></ion-checkbox>
+  <ion-checkbox :disabled="!isMobile" :checked="privacyScreen" @ionChange="privacyScreenChanged"></ion-checkbox>
 </ion-item>
 ```
 
@@ -555,10 +551,7 @@ We can now add a group of radio buttons to our `Home` view that will control the
 
     <ion-item>
       <ion-label>Use System Passcode</ion-label>
-      <ion-radio
-        :disabled="!canUseSystemPIN."
-        value="SystemPasscode"
-      ></ion-radio>
+      <ion-radio :disabled="!canUseSystemPIN." value="SystemPasscode"></ion-radio>
     </ion-item>
   </ion-radio-group>
 </ion-item>
