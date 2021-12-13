@@ -93,7 +93,6 @@ export default function useVault() {
 
   const clearVault = async () => {
     await vault.clear();
-    lockType.value = 'NoLocking';
     session.value = undefined;
     vaultExists.value = await vault.doesVaultExist();
   };
