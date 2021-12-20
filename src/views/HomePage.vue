@@ -112,7 +112,7 @@ import { Device } from '@ionic-enterprise/identity-vault';
 import useVault from '@/services/useVault';
 
 export default defineComponent({
-  name: 'Home',
+  name: 'HomePage',
   components: {
     IonButton,
     IonCheckbox,
