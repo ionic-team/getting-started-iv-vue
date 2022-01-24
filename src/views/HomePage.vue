@@ -82,6 +82,8 @@
             <div>Session Data: {{ session }}</div>
             <div>Vault is Locked: {{ vaultIsLocked }}</div>
             <div>Vault Exists: {{ vaultExists }}</div>
+            <div>Vault Type: {{ vaultType }}</div>
+            <div>Security Type: {{ vaultDeviceSecurityType }}</div>
           </ion-label>
         </ion-item>
       </ion-list>
