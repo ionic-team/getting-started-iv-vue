@@ -21,25 +21,25 @@
 
         <ion-item>
           <div style="flex: auto">
-            <ion-button expand="block" @click="setSession(data)">Set Session Data</ion-button>
+            <ion-button expand="block" @click="setSessionData">Set Session Data</ion-button>
           </div>
         </ion-item>
 
         <ion-item>
           <div style="flex: auto">
-            <ion-button expand="block" @click="restoreSession">Restore Session Data</ion-button>
+            <ion-button expand="block" @click="restoreDataFromVault">Restore Session Data</ion-button>
           </div>
         </ion-item>
 
         <ion-item>
           <div style="flex: auto">
-            <ion-button expand="block" @click="clearVault">Clear Vault</ion-button>
+            <ion-button expand="block" @click="clearDataFromVault">Clear Vault</ion-button>
           </div>
         </ion-item>
 
         <ion-item>
           <div style="flex: auto">
-            <ion-button expand="block" @click="lockVault">Lock Vault</ion-button>
+            <ion-button expand="block" @click="lockDataInVault">Lock Vault</ion-button>
           </div>
         </ion-item>
 
@@ -146,8 +146,76 @@ export default defineComponent({
       Device.setHideScreenOnBackground(evt.detail.checked);
     };
 
+    const {
+      lockType,
+      session,
+      vaultExists,
+      vaultIsLocked,
+      vaultType,
+      vaultDeviceSecurityType,
+
+      lockVault,
+      unlockVault,
+
+      setSession,
+      restoreSession,
+      clearVault,
+    } = useVault();
+
+    const setSessionData = async () => {
+      try {
+        await setSession(data.value);
+        data.value = '';
+      } catch (err) {
+        console.error(err);
+        alert(JSON.stringify(err));
+      }
+    };
+
+    const lockDataInVault = async () => {
+      try {
+        await lockVault();
+        data.value = '';
+      } catch (err) {
+        console.error(err);
+        alert(JSON.stringify(err));
+      }
+    };
+
+    const restoreDataFromVault = async () => {
+      try {
+        await restoreSession();
+        data.value = session.value;
+      } catch (err) {
+        console.error(err);
+        alert(JSON.stringify(err));
+      }
+    };
+
+    const clearDataFromVault = async () => {
+      try {
+        await clearVault();
+        data.value = '';
+      } catch (err) {
+        console.error(err);
+        alert(JSON.stringify(err));
+      }
+    };
+
     return {
-      ...useVault(),
+      lockType,
+      session,
+      vaultExists,
+      vaultIsLocked,
+      vaultType,
+      vaultDeviceSecurityType,
+      unlockVault,
+
+      clearDataFromVault,
+      lockDataInVault,
+      restoreDataFromVault,
+      setSessionData,
+
       canUseBiometrics,
       canUseSystemPIN,
       isMobile,

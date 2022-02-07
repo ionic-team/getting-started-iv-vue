@@ -12,7 +12,7 @@ const config: IdentityVaultConfig = {
   key: 'io.ionic.getstartedivvue',
   type: VaultType.SecureStorage,
   deviceSecurityType: DeviceSecurityType.None,
-  lockAfterBackgrounded: 2000,
+  lockAfterBackgrounded: 600000,
   shouldClearVaultAfterTooManyFailedAttempts: true,
   customPasscodeInvalidUnlockAttempts: 2,
   unlockVaultOnLoad: false,
