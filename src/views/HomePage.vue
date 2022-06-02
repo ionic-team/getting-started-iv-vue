@@ -167,6 +167,7 @@ export default defineComponent({
         await setSession(data.value);
         data.value = '';
       } catch (err) {
+        // eslint-disable-next-line no-console
         console.error(err);
         alert(JSON.stringify(err));
       }
@@ -177,6 +178,7 @@ export default defineComponent({
         await lockVault();
         data.value = '';
       } catch (err) {
+        // eslint-disable-next-line no-console
         console.error(err);
         alert(JSON.stringify(err));
       }
@@ -187,6 +189,7 @@ export default defineComponent({
         await restoreSession();
         data.value = session.value;
       } catch (err) {
+        // eslint-disable-next-line no-console
         console.error(err);
         alert(JSON.stringify(err));
       }
@@ -197,6 +200,7 @@ export default defineComponent({
         await clearVault();
         data.value = '';
       } catch (err) {
+        // eslint-disable-next-line no-console
         console.error(err);
         alert(JSON.stringify(err));
       }

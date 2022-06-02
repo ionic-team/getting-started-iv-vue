@@ -1,6 +1,6 @@
 import { isPlatform } from '@ionic/vue';
-import { mount } from '@vue/test-utils';
-import HomePage from '@/views/HomePage.vue';
+// import { mount } from '@vue/test-utils';
+// import HomePage from '@/views/HomePage.vue';
 
 jest.mock('@ionic/vue', () => {
   const actual = jest.requireActual('@ionic/vue');

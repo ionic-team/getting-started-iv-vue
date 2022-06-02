@@ -58,6 +58,7 @@ const setLockType = async (lockType: 'NoLocking' | 'Biometrics' | 'SystemPasscod
         deviceSecurityType = DeviceSecurityType.None;
     }
 
+    // eslint-disable-next-line no-console
     console.log('set config', type, deviceSecurityType);
 
     await vault.updateConfig({
@@ -88,6 +89,7 @@ export default function useVault(): any {
   };
 
   const restoreSession = async () => {
+    // eslint-disable-next-line no-console
     console.log('restore', vault.config.type, vault.config.deviceSecurityType);
     const value = await vault.getValue(key);
     session.value = value;
@@ -96,6 +98,7 @@ export default function useVault(): any {
   };
 
   const lockVault = () => {
+    // eslint-disable-next-line no-console
     console.log('lock', vault.config.type, vault.config.deviceSecurityType);
     vault.lock();
     vaultType.value = vault.config.type;
@@ -103,6 +106,7 @@ export default function useVault(): any {
   };
 
   const unlockVault = () => {
+    // eslint-disable-next-line no-console
     console.log('unlock', vault.config.type, vault.config.deviceSecurityType);
     vault.unlock();
     vaultType.value = vault.config.type;
