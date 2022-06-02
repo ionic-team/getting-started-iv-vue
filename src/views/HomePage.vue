@@ -21,6 +21,12 @@
 
         <ion-item>
           <div style="flex: auto">
+            <ion-button expand="block" @click="callIsEmpty">Check if Empty</ion-button>
+          </div>
+        </ion-item>
+
+        <ion-item>
+          <div style="flex: auto">
             <ion-button expand="block" @click="setSessionData">Set Session Data</ion-button>
           </div>
         </ion-item>
@@ -157,10 +163,21 @@ export default defineComponent({
       lockVault,
       unlockVault,
 
+      isEmpty,
+
       setSession,
       restoreSession,
       clearVault,
     } = useVault();
+
+    const callIsEmpty = async () => {
+      try {
+        const e = await isEmpty();
+        alert(e);
+      } catch (err) {
+        alert(JSON.stringify(err));
+      }
+    };
 
     const setSessionData = async () => {
       try {
@@ -214,6 +231,8 @@ export default defineComponent({
       vaultType,
       vaultDeviceSecurityType,
       unlockVault,
+
+      callIsEmpty,
 
       clearDataFromVault,
       lockDataInVault,

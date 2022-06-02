@@ -121,6 +121,10 @@ export default function useVault(): any {
     vaultDeviceSecurityType.value = vault.config.deviceSecurityType;
   };
 
+  const isEmpty = () => {
+    return vault.isEmpty();
+  };
+
   return {
     lockType,
     session,
@@ -131,6 +135,8 @@ export default function useVault(): any {
 
     lockVault,
     unlockVault,
+
+    isEmpty,
 
     setSession,
     restoreSession,
