@@ -12,22 +12,22 @@
     "test:e2e": "vue-cli-service test:e2e"
   },
   "dependencies": {
-    "@capacitor/android": "4.4.0",
-    "@capacitor/app": "4.1.0",
-    "@capacitor/core": "4.4.0",
-    "@capacitor/haptics": "4.0.1",
-    "@capacitor/ios": "4.4.0",
-    "@capacitor/keyboard": "4.0.1",
-    "@capacitor/status-bar": "4.0.1",
+    "@capacitor/android": "~4.6.1",
+    "@capacitor/app": "~4.1.1",
+    "@capacitor/core": "~4.6.1",
+    "@capacitor/haptics": "~4.1.0",
+    "@capacitor/ios": "~4.6.1",
+    "@capacitor/keyboard": "~4.1.0",
+    "@capacitor/status-bar": "~4.1.1",
     "@ionic-enterprise/identity-vault": "~5.9.3",
-    "@ionic/vue": "~6.3.3",
-    "@ionic/vue-router": "~6.3.3",
+    "@ionic/vue": "~6.4.1",
+    "@ionic/vue-router": "~6.4.1",
     "core-js": "^3.6.5",
     "vue": "^3.2.1",
     "vue-router": "^4.0.12"
   },
   "devDependencies": {
-    "@capacitor/cli": "4.4.0",
+    "@capacitor/cli": "~4.6.1",
     "@ionic/prettier-config": "~2.0.0",
     "@types/jest": "^27.0.2",
     "@typescript-eslint/eslint-plugin": "^5.6.0",
@@ -44,13 +44,13 @@
     "@vue/vue3-jest": "^27.0.0",
     "babel-jest": "^27.3.1",
     "eslint": "^8.4.1",
-    "eslint-plugin-vue": "~9.6.0",
+    "eslint-plugin-vue": "~9.8.0",
     "husky": "~8.0.1",
     "jest": "^27.3.1",
-    "prettier": "~2.7.1",
+    "prettier": "~2.8.1",
     "pretty-quick": "~3.1.0",
     "ts-jest": "^27.0.7",
-    "typescript": "~4.8.4"
+    "typescript": "~4.9.4"
   },
   "prettier": "@ionic/prettier-config"
 }
