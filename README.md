@@ -2,6 +2,10 @@
 
 In this tutorial we will walk through the basic setup and use of Ionic's Identity Vault in an `@ionic/vue` application.
 
+:::note
+The source code for the Ionic application created in this tutorial can be found [here](https://github.com/ionic-team/getting-started-iv-vue)
+:::
+
 The most common use case of Identity Vault is to connect to a back end service and store user session data. For the purpose of this tutorial, the application we build will not connect to an actual service. Instead, the application will store information that the user enters.
 
 - `src/services/useVault.ts`: A composition API function that abstracts the logic associated with using Identity Vault. This functions and reactive variable exported here model what might be done in a real application.
