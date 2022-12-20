@@ -44,11 +44,11 @@ ionic cap add android
 ionic cap add ios
 ```
 
-Finally, in order to ensure that a `cap copy` runs with each build, add it to the build script in the `package.json` file as such:
+Finally, in order to ensure that a `cap sync` runs with each build, add it to the build script in the `package.json` file as such:
 
 ```JSON
   "scripts": {
-    "build": "vue-cli-service build && cap copy",
+    "build": "vue-cli-service build && cap sync",
     ...
   },
 ```
@@ -187,7 +187,6 @@ Rather than create define functions such as `setSession()` and `restoreSession()
 Now that we have the vault in place, let's switch over to `src/views/Home.vue` and implement some simple interactions with the vault. Here is a snapshot of what we will change:
 
 1. replace the "container" `div` with a list of form controls
-1. add a `setup()` function
 1. remove the existing styling
 
 When we are done, the page will look like this:
@@ -240,7 +239,7 @@ When we are done, the page will look like this:
   </ion-page>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import {
   IonButton,
   IonContent,
@@ -253,29 +252,11 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/vue';
-import { defineComponent, ref } from 'vue';
+import { ref } from 'vue';
 import useVault from '@/services/useVault';
 
-export default defineComponent({
-  name: 'Home',
-  components: {
-    IonButton,
-    IonContent,
-    IonHeader,
-    IonInput,
-    IonItem,
-    IonLabel,
-    IonList,
-    IonPage,
-    IonTitle,
-    IonToolbar,
-  },
-  setup() {
-    const data = ref('');
-
-    return { ...useVault(), data };
-  },
-});
+const data = ref('');
+const { ...useVault() };
 </script>
 
 <style scoped></style>
@@ -406,7 +387,7 @@ import {
 import { Device } from '@ionic-enterprise/identity-vault';
 ```
 
-Then add the following code to the `setup()` function:
+Then add the following code to the `script setup` section:
 
 ```TypeScript
     const isMobile = isPlatform('hybrid');
@@ -419,12 +400,6 @@ Then add the following code to the `setup()` function:
     const privacyScreenChanged = (evt: { detail: { checked: boolean } }) => {
       Device.setHideScreenOnBackground(evt.detail.checked);
     };
-```
-
-Remember to add `isMobile`, `privacyScreen`, and `privacyScreenChanged` to the return value of `setup()` so we can use those items in our template:
-
-```TypeScript
-return { ...useVault(), data, isMobile, privacyScreen, privacyScreenChanged };
 ```
 
 Finally, we can add the checkbox to our template:
@@ -561,7 +536,7 @@ We can now add a group of radio buttons to our `Home` view that will control the
 </ion-item>
 ```
 
-For the "Use Biometric" and "Use System Passcode "radio buttons, we are disabling it based on whether or not the feature has been enabled on the device. We will need to code for that in our `setup()`.
+For the "Use Biometric" and "Use System Passcode "radio buttons, we are disabling it based on whether or not the feature has been enabled on the device. We will need to code for that in our `script setup`.
 
 ```TypeScript
     const canUseSystemPIN = ref(false);
@@ -572,8 +547,6 @@ For the "Use Biometric" and "Use System Passcode "radio buttons, we are disablin
 ```
 
 Notice that we are using the `Device` API again here to determine if biometrics are both supported by the current device as well as enabled by the user. We don't want users to be able to choose that option unless the biometrics are properly set up on the device.
-
-Be sure to include `canUseSystemPIN` and `canUseBiometrics` in the return statement at the end of `setup()`.
 
 One final bit of housekeeping before building and running the application is that if you are using an iOS device you need to open the `Info.plist` file and add the `NSFaceIDUsageDescription` key with a value like "Use Face ID to unlock the vault when it is locked."
 
@@ -627,6 +600,10 @@ With that in place, open the `Home.vue` file and do the following:
 
 - Add a button to clear the vault by calling `clearVault()` on click
 - Display the current value of `vaultExists` in a `div` just like we are currently showing `session` and `vaultIsLocked`
+
+## Conclusion
+
+**Code Challenge:** Now that we have the infrastructure in place, add support for setting the Vault Locking Mechanism to "Both" in addition to using just biometrics or just the system PIN.
 
 ## Conclusion
 

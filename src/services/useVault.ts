@@ -21,7 +21,7 @@ const config: IdentityVaultConfig = {
 const vault = Capacitor.getPlatform() === 'web' ? new BrowserVault(config) : new Vault(config);
 
 const key = 'sessionData';
-const lockType = ref<'NoLocking' | 'Biometrics' | 'SystemPasscode' | undefined>();
+const lockType = ref<'NoLocking' | 'Biometrics' | 'SystemPasscode' | 'Both' | undefined>();
 const session = ref<string | null | undefined>();
 const vaultExists = ref(false);
 const vaultIsLocked = ref(false);
@@ -37,7 +37,7 @@ vault.onUnlock(() => (vaultIsLocked.value = false));
 
 vault.isLocked().then((x) => (vaultIsLocked.value = x));
 
-const setLockType = async (lockType: 'NoLocking' | 'Biometrics' | 'SystemPasscode' | undefined) => {
+const setLockType = async (lockType: 'NoLocking' | 'Biometrics' | 'SystemPasscode' | 'Both' | undefined) => {
   let type: VaultType;
   let deviceSecurityType: DeviceSecurityType | undefined;
 
@@ -51,6 +51,11 @@ const setLockType = async (lockType: 'NoLocking' | 'Biometrics' | 'SystemPasscod
       case 'SystemPasscode':
         type = VaultType.DeviceSecurity;
         deviceSecurityType = DeviceSecurityType.SystemPasscode;
+        break;
+
+      case 'Both':
+        type = VaultType.DeviceSecurity;
+        deviceSecurityType = DeviceSecurityType.Both;
         break;
 
       default:

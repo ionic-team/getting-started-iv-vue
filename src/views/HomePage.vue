@@ -74,6 +74,11 @@
               <ion-label>Use System Passcode</ion-label>
               <ion-radio :disabled="!canUseSystemPIN" value="SystemPasscode"></ion-radio>
             </ion-item>
+
+            <ion-item>
+              <ion-label>Use Both</ion-label>
+              <ion-radio :disabled="!canUseSystemPIN" value="Both"></ion-radio>
+            </ion-item>
           </ion-radio-group>
         </ion-item>
 
@@ -91,7 +96,7 @@
   </ion-page>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import {
   IonButton,
   IonCheckbox,
@@ -109,126 +114,83 @@ import {
   IonToolbar,
   isPlatform,
 } from '@ionic/vue';
-import { defineComponent, ref } from 'vue';
+import { ref } from 'vue';
 import { Device } from '@ionic-enterprise/identity-vault';
 import useVault from '@/services/useVault';
 
-export default defineComponent({
-  name: 'HomePage',
-  components: {
-    IonButton,
-    IonCheckbox,
-    IonContent,
-    IonHeader,
-    IonInput,
-    IonItem,
-    IonLabel,
-    IonList,
-    IonListHeader,
-    IonPage,
-    IonRadio,
-    IonRadioGroup,
-    IonTitle,
-    IonToolbar,
-  },
-  setup() {
-    const isMobile = isPlatform('hybrid');
-    const canUseBiometrics = ref(false);
-    const canUseSystemPIN = ref(false);
-    const data = ref('');
-    const privacyScreen = ref(false);
+const isMobile = isPlatform('hybrid');
+const canUseBiometrics = ref(false);
+const canUseSystemPIN = ref(false);
+const data = ref('');
+const privacyScreen = ref(false);
 
-    Device.isSystemPasscodeSet().then((x) => (canUseSystemPIN.value = x));
-    Device.isBiometricsEnabled().then((x) => (canUseBiometrics.value = x));
-    Device.isHideScreenOnBackgroundEnabled().then((x) => (privacyScreen.value = x));
+Device.isSystemPasscodeSet().then((x) => (canUseSystemPIN.value = x));
+Device.isBiometricsEnabled().then((x) => (canUseBiometrics.value = x));
+Device.isHideScreenOnBackgroundEnabled().then((x) => (privacyScreen.value = x));
 
-    const privacyScreenChanged = (evt: { detail: { checked: boolean } }) => {
-      Device.setHideScreenOnBackground(evt.detail.checked);
-    };
+const privacyScreenChanged = (evt: { detail: { checked: boolean } }) => {
+  Device.setHideScreenOnBackground(evt.detail.checked);
+};
 
-    const {
-      lockType,
-      session,
-      vaultExists,
-      vaultIsLocked,
-      vaultType,
-      vaultDeviceSecurityType,
+const {
+  lockType,
+  session,
+  vaultExists,
+  vaultIsLocked,
+  vaultType,
+  vaultDeviceSecurityType,
 
-      lockVault,
-      unlockVault,
+  lockVault,
+  unlockVault,
 
-      setSession,
-      restoreSession,
-      clearVault,
-    } = useVault();
+  setSession,
+  restoreSession,
+  clearVault,
+} = useVault();
 
-    const setSessionData = async () => {
-      try {
-        await setSession(data.value);
-        data.value = '';
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error(err);
-        alert(JSON.stringify(err));
-      }
-    };
+const setSessionData = async () => {
+  try {
+    await setSession(data.value);
+    data.value = '';
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error(err);
+    alert(JSON.stringify(err));
+  }
+};
 
-    const lockDataInVault = async () => {
-      try {
-        await lockVault();
-        data.value = '';
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error(err);
-        alert(JSON.stringify(err));
-      }
-    };
+const lockDataInVault = async () => {
+  try {
+    await lockVault();
+    data.value = '';
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error(err);
+    alert(JSON.stringify(err));
+  }
+};
 
-    const restoreDataFromVault = async () => {
-      try {
-        await restoreSession();
-        data.value = session.value;
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error(err);
-        alert(JSON.stringify(err));
-      }
-    };
+const restoreDataFromVault = async () => {
+  try {
+    await restoreSession();
+    data.value = session.value;
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error(err);
+    alert(JSON.stringify(err));
+  }
+};
 
-    const clearDataFromVault = async () => {
-      try {
-        await clearVault();
-        data.value = '';
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error(err);
-        alert(JSON.stringify(err));
-      }
-    };
-
-    return {
-      lockType,
-      session,
-      vaultExists,
-      vaultIsLocked,
-      vaultType,
-      vaultDeviceSecurityType,
-      unlockVault,
-
-      clearDataFromVault,
-      lockDataInVault,
-      restoreDataFromVault,
-      setSessionData,
-
-      canUseBiometrics,
-      canUseSystemPIN,
-      isMobile,
-      data,
-      privacyScreen,
-      privacyScreenChanged,
-    };
-  },
-});
+const clearDataFromVault = async () => {
+  try {
+    await clearVault();
+    data.value = '';
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error(err);
+    alert(JSON.stringify(err));
+  }
+};
 </script>
 
 <style scoped></style>
