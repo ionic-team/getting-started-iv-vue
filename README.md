@@ -8,7 +8,7 @@ The source code for the Ionic application created in this tutorial can be found 
 
 The most common use case of Identity Vault is to connect to a back end service and store user session data. For the purpose of this tutorial, the application we build will not connect to an actual service. Instead, the application will store information that the user enters.
 
-- `src/services/useVault.ts`: A composition API function that abstracts the logic associated with using Identity Vault. This functions and reactive variable exported here model what might be done in a real application.
+- `src/composables/vault.ts`: A composition API function that abstracts the logic associated with using Identity Vault. This functions and reactive variable exported here model what might be done in a real application.
 - `src/views/Home.vue`: The main view will have several form controls that allow the user to manipulate the vault. An application would not typically do this. Rather, it would call the methods from `useVault()` within various workflows. In this "getting started" demo application, however, this allows us to easily play around with the various APIs to see how they behave.
 
 ## Generate the Application
@@ -69,7 +69,7 @@ npm install @ionic-enterprise/identity-vault
 
 In this step, we will create the vault and test it by storing an retrieving a value from it. This value will be called `session` since storing session data in a vault is the most common use case. However, it is certainly not the _only_ use case.
 
-First, create a file named `src/services/useVault.ts`. Within this file, we will define the vault as well as create a composition function that abstracts all of the logic we need in order to interact with the vault:
+First, create a file named `src/composables/vault.ts`. Within this file, we will define the vault as well as create a composition function that abstracts all of the logic we need in order to interact with the vault:
 
 ```TypeScript
 import { Capacitor } from '@capacitor/core';
@@ -101,7 +101,7 @@ const vault =
 const key = 'sessionData';
 const session = ref<string | null | undefined>();
 
-export default function useVault() {
+export const useVault = () => {
   const setSession = async (value: string): Promise<void> => {
     session.value = value;
     await vault.setValue(key, value);
@@ -160,7 +160,7 @@ const session = ref<string | null | undefined>();
 Finally, we create a composition function that returns our `session` as well defining a couple of functions that are used to set and restore our session:
 
 ```TypeScript
-export default function useVault() {
+export const useVault = () => {
   const setSession = async (value: string): Promise<void> => {
     session.value = value;
     await vault.setValue(key, value);
@@ -253,7 +253,7 @@ import {
   IonToolbar,
 } from '@ionic/vue';
 import { ref } from 'vue';
-import useVault from '@/services/useVault';
+import { useVault } from '@/composables/useVault';
 
 const data = ref('');
 const { ...useVault() };
@@ -320,7 +320,7 @@ We can now lock and unlock the vault, though in our current state we cannot real
 
 In our case, we will just clear the `session` and have a flag that we can use to visually indicate if the vault is locked or not. We can do that by using the vault's `onLock` event.
 
-Add the following code to `src/services/useVault.ts` before the start of the `useVault()` function:
+Add the following code to `src/composables/vault.ts` before the start of the `useVault()` function:
 
 ```TypeScript
 const vaultIsLocked = ref(false);
@@ -456,7 +456,7 @@ In our application,we don't want to use every possible combination. Rather than 
 
 Now we have the types defined within the domain of our application. The only code within our application that will have to worry about what this means within the context of the Identity Vault configuration is our `useVault()` composition function.
 
-First let's add a reactive property to `src/services/useVault` just like the other ones that exist.
+First let's add a reactive property to `src/composables/useVault` just like the other ones that exist.
 
 ```TypeScript
 const lockType = ref<
@@ -564,7 +564,7 @@ Try the following:
 1. Press "Restore Session Data"
 1. Note that you are asked to unlock the vault
 
-Clearly the vault was locked. Our flag is wrong because we are just setting it to `false` on startup, and the `onLock` event handler is not running on startup. We need a way to detect the current lock status on startup (or any other time that we may want to know it programmatically). The `Vault` API gives us that via the `isLocked()` method. Add the following line of code immediately after the `onLock` and `onUnlock` event handlers in our `useVault.ts` file.
+Clearly the vault was locked. Our flag is wrong because we are just setting it to `false` on startup, and the `onLock` event handler is not running on startup. We need a way to detect the current lock status on startup (or any other time that we may want to know it programmatically). The `Vault` API gives us that via the `isLocked()` method. Add the following line of code immediately after the `onLock` and `onUnlock` event handlers in our `vault.ts` file.
 
 ```TypeScript
 vault.isLocked().then(x => (vaultIsLocked.value = x));
@@ -576,7 +576,7 @@ Now when we restart the app, the vault should be shown as locked.
 
 One last method we will explore before we leave is the `clear()` method. The `clear()` API will remove all items from the vault and then remove the vault itself.
 
-To show this in action, let's add a `vaultExists` reactive property to our `src/services/useVault.ts` file. Remember to return it from the `useVault()` composable function so we bind to it in our view.
+To show this in action, let's add a `vaultExists` reactive property to our `src/composables/vault.ts` file. Remember to return it from the `useVault()` composable function so we bind to it in our view.
 
 ```TypeScript
 const vaultExists = ref(false);

@@ -116,7 +116,7 @@ import {
 } from '@ionic/vue';
 import { ref } from 'vue';
 import { Device } from '@ionic-enterprise/identity-vault';
-import useVault from '@/services/useVault';
+import { useVault } from '@/composables/vault';
 
 const isMobile = isPlatform('hybrid');
 const canUseBiometrics = ref(false);

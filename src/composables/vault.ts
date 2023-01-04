@@ -78,7 +78,7 @@ const setLockType = async (lockType: 'NoLocking' | 'Biometrics' | 'SystemPasscod
 };
 watch(lockType, (lock) => setLockType(lock));
 
-export default function useVault(): any {
+export const useVault = () => {
   vault.isEmpty().then((x) => {
     vaultExists.value = !x;
     vaultType.value = vault.config.type;
@@ -141,4 +141,4 @@ export default function useVault(): any {
     restoreSession,
     clearVault,
   };
-}
+};
