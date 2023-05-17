@@ -209,8 +209,7 @@ When we are done, the page will look like this:
 
       <ion-list>
         <ion-item>
-          <ion-label position="floating">Enter the "session" data</ion-label>
-          <ion-input v-model="data"></ion-input>
+          <ion-input label="Enter the &ldquo;session&rdquo; data" label-placement="floating" v-model="data"></ion-input>
         </ion-item>
 
         <ion-item>
@@ -406,8 +405,9 @@ Finally, we can add the checkbox to our template:
 
 ```html
 <ion-item>
-  <ion-label>Use Privacy Screen</ion-label>
-  <ion-checkbox :disabled="!isMobile" :checked="privacyScreen" @ionChange="privacyScreenChanged"></ion-checkbox>
+  <ion-checkbox :disabled="!isMobile" :checked="privacyScreen" @ionChange="privacyScreenChanged"
+    >Use Privacy Screen</ion-checkbox
+  >
 </ion-item>
 ```
 
@@ -519,18 +519,15 @@ We can now add a group of radio buttons to our `Home` view that will control the
     </ion-list-header>
 
     <ion-item>
-      <ion-label>Do Not Lock</ion-label>
-      <ion-radio value="NoLocking"></ion-radio>
+      <ion-radio value="NoLocking">Do Not Lock</ion-radio>
     </ion-item>
 
     <ion-item>
-      <ion-label>Use Biometrics</ion-label>
-      <ion-radio :disabled="!canUseBiometrics" value="Biometrics"></ion-radio>
+      <ion-radio :disabled="!canUseBiometrics" value="Biometrics">Use Biometrics</ion-radio>
     </ion-item>
 
     <ion-item>
-      <ion-label>Use System Passcode</ion-label>
-      <ion-radio :disabled="!canUseSystemPIN." value="SystemPasscode"></ion-radio>
+      <ion-radio :disabled="!canUseSystemPIN." value="SystemPasscode">Use System Passcode</ion-radio>
     </ion-item>
   </ion-radio-group>
 </ion-item>

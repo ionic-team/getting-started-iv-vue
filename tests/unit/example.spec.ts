@@ -1,22 +1,18 @@
 import { isPlatform } from '@ionic/vue';
-// import { mount } from '@vue/test-utils';
-// import HomePage from '@/views/HomePage.vue';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-jest.mock('@ionic/vue', () => {
-  const actual = jest.requireActual('@ionic/vue');
-  return { ...actual, isPlatform: jest.fn() };
+vi.mock('@ionic/vue', async () => {
+  const actual = (await vi.importActual('@ionic/vue')) as any;
+  return { ...actual, isPlatform: vi.fn() };
 });
 
 describe('HomePage.vue', () => {
   beforeEach(() => {
     (isPlatform as any).mockImplementation((key: string) => key === 'hybrid');
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
-  it('renders home vue', () => {
-    // const wrapper = mount(HomePage);
-    // const title = wrapper.findComponent('[data-testid="title"]');
-    // expect(title.text()).toMatch('IV Tester');
+  it('runs a test', () => {
     expect(true).toBe(true);
   });
 });
